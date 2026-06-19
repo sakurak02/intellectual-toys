@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知的玩具工房</title>
+
+<style>
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+    background:#fafafa;
+    color:#333;
+    line-height:1.7;
+}
+
+header{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+h1{
+    font-size:2.5rem;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#666;
+}
+
+.counter{
+    font-size:2rem;
+    font-weight:bold;
+    margin:20px 0;
+}
+
+.grid100{
+    display:grid;
+    grid-template-columns:repeat(10,1fr);
+    gap:4px;
+    max-width:500px;
+    margin:30px auto;
+}
+
+.cell{
+    aspect-ratio:1;
+    border:1px solid #ccc;
+    background:white;
+}
+
+.section{
+    margin-top:50px;
+}
+
+.category{
+    margin-bottom:30px;
+}
+
+.cards{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.card{
+    border:1px solid #ddd;
+    background:white;
+    padding:12px;
+    border-radius:8px;
+    min-width:180px;
+}
+
+.card small{
+    color:#666;
+}
+
+footer{
+    text-align:center;
+    margin-top:60px;
+    color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>知的玩具工房</h1>
+
+<p class="subtitle">
+「わからない」を動かしてみる実験室
+</p>
+
+<div class="counter">
+0 / 100
+</div>
+</header>
+
+<div class="grid100" id="grid"></div>
+
+<div class="section">
+
+<div class="category">
+<h2>■ 中学受験算数</h2>
+
+<div class="cards">
+
+<div class="card">
+<strong>#001 追いつけ！</strong><br>
+<small>ダイヤグラム実験室（制作中）</small>
+</div>
+
+<div class="card">
+<strong>#002 走れP</strong><br>
+<small>点Pの動き（予定）</small>
+</div>
+
+<div class="card">
+<strong>#003 箱をほどく</strong><br>
+<small>展開図（予定）</small>
+</div>
+
+</div>
+</div>
+
+<div class="category">
+<h2>■ 数学概念</h2>
+<p>まだありません</p>
+</div>
+
+<div class="category">
+<h2>■ 高校数学</h2>
+<p>まだありません</p>
+</div>
+
+<div class="category">
+<h2>■ ゲーム</h2>
+<p>まだありません</p>
+</div>
+
+</div>
+
+<footer>
+知的玩具100個プロジェクト
+</footer>
+
+<script>
+const grid=document.getElementById("grid");
+
+for(let i=0;i<100;i++){
+    const cell=document.createElement("div");
+    cell.className="cell";
+    grid.appendChild(cell);
+}
+</script>
+
+</body>
+</html>
