@@ -107,11 +107,32 @@ h1{
 }
 
 .card{
+    display:block;
     border:1px solid #ddd;
     background:white;
     padding:12px;
     border-radius:8px;
-    min-width:180px;
+    min-width:0;
+    flex:1 1 260px;
+    color:inherit;
+    text-decoration:none;
+}
+
+.card.completed-card{
+    cursor:pointer;
+    transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;
+}
+
+.card.completed-card:hover,
+.card.completed-card:focus-visible{
+    border-color:#d49b3d;
+    box-shadow:0 4px 12px rgba(128,88,20,.14);
+    transform:translateY(-1px);
+}
+
+.card.completed-card:focus-visible{
+    outline:3px solid rgba(196,132,29,.35);
+    outline-offset:2px;
 }
 
 .card small{
@@ -142,6 +163,15 @@ footer{
     .cell{
         font-size:.8rem;
     }
+
+    .cards{
+        display:grid;
+        grid-template-columns:1fr;
+    }
+
+    .card{
+        width:100%;
+    }
 }
 </style>
 </head>
@@ -156,7 +186,7 @@ footer{
 </p>
 
 <div class="counter">
-1 / 100
+2 / 100
 </div>
 </header>
 
@@ -172,17 +202,16 @@ footer{
 
 <div class="cards">
 
-<div class="card">
-  <a href="toys/001-oitsuke/" style="text-decoration:none; color:inherit;">
-    <strong>#001 追いつけ！</strong><br>
-    <small>ダイヤグラム実験室</small>
-  </a>
-</div>
+<a class="card completed-card" href="toys/001-oitsuke/index.html">
+  <strong>#001 追いつけ！</strong><br>
+  <small>ダイヤグラム実験室</small>
+</a>
 
-<div class="card">
-<strong>#002 走れP</strong><br>
-<small>点Pの動き（予定）</small>
-</div>
+<a class="card completed-card" href="toys/002-deae/index.html">
+  <strong>#002 出会え！</strong><br>
+  <small>向かい合って歩くと、どこで出会う？</small><br>
+  <small>中学受験算数 / 速さ / ダイヤグラム</small>
+</a>
 
 <div class="card">
 <strong>#003 箱をほどく</strong><br>
@@ -221,6 +250,12 @@ const toys=[
         id:1,
         title:"追いつけ！",
         slug:"001-oitsuke",
+        completed:true
+    },
+    {
+        id:2,
+        title:"出会え！",
+        slug:"002-deae",
         completed:true
     }
 ];
