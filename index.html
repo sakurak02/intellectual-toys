@@ -39,15 +39,57 @@ h1{
 .grid100{
     display:grid;
     grid-template-columns:repeat(10,1fr);
-    gap:4px;
-    max-width:500px;
-    margin:30px auto;
+    gap:6px;
+    max-width:620px;
+    margin:18px auto 30px;
+    padding:14px;
+    border:1px solid #e2e2e2;
+    border-radius:10px;
+    background:#f2f2f2;
 }
 
 .cell{
     aspect-ratio:1;
-    border:1px solid #ccc;
-    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #d4d4d4;
+    border-radius:5px;
+    background:#e7e7e7;
+    color:#999;
+    font-size:.75rem;
+    font-variant-numeric:tabular-nums;
+    cursor:default;
+    user-select:none;
+}
+
+.cell.completed{
+    border-color:#d49b3d;
+    background:#fff1c9;
+    color:#714b0c;
+    font-weight:bold;
+    text-decoration:none;
+    cursor:pointer;
+    box-shadow:0 2px 5px rgba(128,88,20,.18);
+    transition:background .15s ease,transform .15s ease;
+}
+
+.cell.completed:hover,
+.cell.completed:focus-visible{
+    background:#ffe39a;
+    transform:translateY(-1px);
+}
+
+.cell.completed:focus-visible{
+    outline:3px solid rgba(196,132,29,.35);
+    outline-offset:2px;
+}
+
+.shelf-title{
+    margin:0;
+    text-align:center;
+    font-size:1.1rem;
+    color:#555;
 }
 
 .section{
@@ -81,6 +123,26 @@ footer{
     margin-top:60px;
     color:#888;
 }
+
+@media (max-width:600px){
+    body{
+        padding:16px;
+    }
+
+    h1{
+        font-size:2rem;
+    }
+
+    .grid100{
+        grid-template-columns:repeat(5,1fr);
+        gap:7px;
+        padding:12px;
+    }
+
+    .cell{
+        font-size:.8rem;
+    }
+}
 </style>
 </head>
 
@@ -98,7 +160,10 @@ footer{
 </div>
 </header>
 
+<section aria-labelledby="shelf-title">
+<h2 class="shelf-title" id="shelf-title">作品棚</h2>
 <div class="grid100" id="grid"></div>
+</section>
 
 <div class="section">
 
@@ -151,9 +216,34 @@ footer{
 <script>
 const grid=document.getElementById("grid");
 
-for(let i=0;i<100;i++){
-    const cell=document.createElement("div");
+const toys=[
+    {
+        id:1,
+        title:"追いつけ！",
+        slug:"001-oitsuke",
+        completed:true
+    }
+];
+
+for(let id=1;id<=100;id++){
+    const toy=toys.find(item=>item.id===id);
+    const number=String(id).padStart(3,"0");
+
+    if(toy?.completed){
+        const link=document.createElement("a");
+        link.className="cell completed";
+        link.href=`toys/${toy.slug}/index.html`;
+        link.textContent=number;
+        link.title=`#${number} ${toy.title}`;
+        link.setAttribute("aria-label",`#${number} ${toy.title}を開く`);
+        grid.appendChild(link);
+        continue;
+    }
+
+    const cell=document.createElement("span");
     cell.className="cell";
+    cell.textContent=number;
+    cell.setAttribute("aria-label",`#${number} 未完成`);
     grid.appendChild(cell);
 }
 </script>
