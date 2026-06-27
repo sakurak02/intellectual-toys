@@ -101,8 +101,8 @@ h1{
 }
 
 .cards{
-    display:flex;
-    flex-wrap:wrap;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
     gap:12px;
 }
 
@@ -112,8 +112,6 @@ h1{
     background:white;
     padding:12px;
     border-radius:8px;
-    min-width:0;
-    flex:1 1 260px;
     color:inherit;
     text-decoration:none;
 }
@@ -165,7 +163,6 @@ footer{
     }
 
     .cards{
-        display:grid;
         grid-template-columns:1fr;
     }
 
@@ -186,7 +183,7 @@ footer{
 </p>
 
 <div class="counter">
-3 / 100
+4 / 100
 </div>
 </header>
 
@@ -216,6 +213,12 @@ footer{
 <a class="card completed-card" href="toys/003-orikaese/index.html">
   <strong>#003 折り返せ！</strong><br>
   <small>行って、戻ると、グラフはどう折れる？</small><br>
+  <small>中学受験算数 / 速さ / ダイヤグラム</small>
+</a>
+
+<a class="card completed-card" href="toys/004-tomare/index.html">
+  <strong>#004 止まれ！</strong><br>
+  <small>途中で休憩したら、グラフはどうなる？</small><br>
   <small>中学受験算数 / 速さ / ダイヤグラム</small>
 </a>
 
@@ -263,6 +266,12 @@ const toys=[
         id:3,
         title:"折り返せ！",
         slug:"003-orikaese",
+        completed:true
+    },
+    {
+        id:4,
+        title:"止まれ！",
+        slug:"004-tomare",
         completed:true
     }
 ];
