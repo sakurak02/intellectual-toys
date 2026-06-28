@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fffaf0">
-  <title>#004 止まれ！｜知的玩具工房</title>
+  <title>#005 速くなれ！｜知的玩具工房</title>
   <style>
     :root {
       --ink: #25313c; --muted: #65727d; --paper: #fffdf8; --cream: #fff6dc;
@@ -36,25 +36,24 @@
     .track { position: absolute; left: 28px; right: 28px; bottom: 18px; height: 112px; }
     .road { position: absolute; left: 0; right: 0; bottom: 0; height: 48px; border-radius: 25px; background: var(--road); box-shadow: inset 0 -5px 0 #d0c9ba; }
     .road::after { content: ""; position: absolute; left: 4%; right: 4%; top: 22px; border-top: 3px dashed rgba(255,255,255,.9); }
-    .end, .rest-label { position: absolute; bottom: 46px; color: #63745d; font-size: .72rem; font-weight: 700; }
+    .end, .boost-label { position: absolute; bottom: 46px; color: #63745d; font-size: .72rem; font-weight: 700; }
     .end.left { left: 0; }
     .end.right { right: 0; }
-    .rest-label { left: 50%; transform: translateX(-50%); color: #755900; }
-    .rest-mark { position: absolute; left: 50%; bottom: 2px; width: 4px; height: 48px; border-radius: 4px; background: var(--sun); transform: translateX(-50%); box-shadow: 0 0 0 4px rgba(247,201,72,.2); }
+    .boost-label { color: #755900; transform: translateX(-50%); transition: left .16s ease; }
+    .boost-mark { position: absolute; bottom: 2px; width: 4px; height: 48px; border-radius: 4px; background: var(--sun); transform: translateX(-50%); box-shadow: 0 0 0 4px rgba(247,201,72,.2); transition: left .16s ease; }
     .walker { position: absolute; bottom: 38px; width: 54px; text-align: center; transform: translateX(-50%); will-change: left; }
     .walker .person { display: block; font-size: 2.6rem; line-height: 1; transform: scaleX(-1); transform-origin: 50% 100%; filter: drop-shadow(0 4px 2px rgba(46,55,45,.15)); }
     .walker .name { display: block; margin-top: 2px; font-size: .72rem; font-weight: 800; }
-    .walker .zzz { position: absolute; left: 34px; top: -16px; color: #52616b; font-size: .78rem; font-weight: 900; opacity: 0; transform: translateY(5px); }
-    .walker.moving .person { animation: bob-forward .32s ease-in-out infinite alternate; }
-    .walker.resting .person { transform: rotate(-90deg) translate(-4px, 3px); animation: breathe 1s ease-in-out infinite alternate; }
-    .walker.resting .zzz { opacity: 1; animation: zzz 1.1s ease-in-out infinite alternate; }
+    .spark { position: absolute; left: 39px; top: -8px; color: #ed6a5a; font-size: 1rem; font-weight: 900; opacity: 0; transform: translateY(5px); }
+    .walker.moving .person { animation: bob-forward .42s ease-in-out infinite alternate; }
+    .walker.fast .person { animation-duration: .18s; }
+    .walker.fast .spark { opacity: 1; animation: spark .28s ease-in-out infinite alternate; }
     .walker.arrived .person { animation: arrive-forward .5s ease both; }
     @keyframes bob-forward {
       from { transform: scaleX(-1); }
       to { transform: scaleX(-1) translateY(-6px) rotate(-3deg); }
     }
-    @keyframes breathe { to { transform: rotate(-90deg) translate(-7px, 3px) scale(1.04); } }
-    @keyframes zzz { to { transform: translateY(-3px); opacity: .75; } }
+    @keyframes spark { to { transform: translateY(-3px) scale(1.12); } }
     @keyframes arrive-forward {
       0%, 100% { transform: scaleX(-1); }
       35% { transform: scaleX(-1) scale(1.22) rotate(-7deg); }
@@ -65,24 +64,28 @@
     .control label { display: flex; justify-content: space-between; gap: 8px; font-size: .86rem; font-weight: 750; }
     output { font-variant-numeric: tabular-nums; white-space: nowrap; }
     input[type="range"] { width: 100%; min-height: 30px; margin: 8px 0 0; accent-color: var(--a); cursor: pointer; }
-    .control.rest input { accent-color: var(--sun); }
-    .control.view input { accent-color: var(--b); }
-    .actions { display: flex; justify-content: center; gap: 10px; }
+    .control.boost-time input { accent-color: var(--sun); }
+    .control.after-speed input { accent-color: var(--b); }
+    .actions { display: flex; justify-content: center; }
     button { min-width: 118px; min-height: 48px; border: 0; border-radius: 999px; padding: 11px 22px; color: white; background: var(--ink); font: inherit; font-weight: 800; cursor: pointer; box-shadow: 0 5px 0 #111b23; }
     button:active { transform: translateY(3px); box-shadow: 0 2px 0 #111b23; }
-    button.secondary { color: var(--ink); background: #ece8de; box-shadow: 0 5px 0 #d1cabc; }
     .diagram { padding: 10px 18px 8px; border-top: 1px solid var(--line); background: var(--paper); }
     .diagram h2 { margin: 0 0 4px; font-size: .92rem; }
     svg { display: block; width: 100%; max-width: 100%; height: 250px; border-radius: 14px; background: #fffefa; }
     .legend { display: flex; justify-content: center; gap: 20px; margin-top: 2px; color: var(--muted); font-size: .76rem; }
     .dot { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border-radius: 50%; }
     .results { margin-top: 18px; padding: 20px; }
-    .numbers { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
-    .number-card { min-width: 0; padding: 11px 7px; border-radius: 14px; background: #f8f6ef; text-align: center; }
-    .number-card span { display: block; color: var(--muted); font-size: .72rem; }
-    .number-card strong { display: block; margin-top: 2px; font-size: clamp(.98rem, 3vw, 1.22rem); font-variant-numeric: tabular-nums; }
-    .number-card.rest { background: var(--cream); }
+    .numbers { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+    .number-card { min-width: 0; padding: 10px 5px; border-radius: 13px; background: #f8f6ef; text-align: center; }
+    .number-card span { display: block; color: var(--muted); font-size: .68rem; }
+    .number-card strong { display: block; margin-top: 2px; font-size: clamp(.88rem, 2.6vw, 1.08rem); font-variant-numeric: tabular-nums; }
+    .number-card.boost { background: var(--cream); }
     .thought { margin: 14px 0 0; color: var(--muted); text-align: center; font-weight: 700; }
+    .lesson { display: none; margin: 16px auto 0; max-width: 520px; padding: 16px; border-radius: 18px; background: #fff6dc; text-align: center; font-weight: 800; }
+    .lesson.show { display: block; }
+    .lesson p { margin: 0 0 8px; }
+    .lesson p:last-child { margin-bottom: 0; }
+    .lesson strong { color: #b94a3d; }
     .feedback { margin-top: 18px; padding: 22px; text-align: center; }
     .feedback p { margin: 0 0 10px; font-weight: 700; }
     .feedback a { display: inline-block; padding: 10px 20px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: white; font-weight: 800; }
@@ -98,7 +101,7 @@
       .sky { min-height: 220px; padding-inline: 8px; }
       .track { left: 20px; right: 20px; }
       .walker { width: 44px; } .walker .person { font-size: 2.25rem; }
-      .walker .zzz { left: 28px; top: -13px; }
+      .spark { left: 31px; }
       .controls { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
       .control { padding: 9px 12px; }
       .diagram { padding: 12px 8px 10px; }
@@ -106,8 +109,9 @@
       svg { height: auto; }
       .numbers { grid-template-columns: 1fr; }
     }
+    @media (max-width: 380px) { .boost-label { font-size: .63rem; } }
     @media (prefers-reduced-motion: reduce) {
-      .walker.moving .person, .walker.resting .person, .walker.resting .zzz { animation: none; }
+      .walker.moving .person, .walker.fast .spark, .walker.arrived .person { animation: none; }
     }
   </style>
 </head>
@@ -115,56 +119,58 @@
   <main class="page">
     <a class="back" href="../../index.html">← 工房のトップへ</a>
     <header>
-      <p class="number">INTELLECTUAL TOY #004</p>
-      <h1>止まれ！</h1>
-      <p class="lead">途中で休憩したら、グラフはどうなる？</p>
+      <p class="number">INTELLECTUAL TOY #005</p>
+      <h1>速くなれ！</h1>
+      <p class="lead">途中からスピードアップすると、グラフはどう変わる？</p>
     </header>
 
-    <section class="card playground" aria-label="途中で休憩して歩くアニメーション">
+    <section class="card playground" aria-label="途中から速くなる犬のアニメーション">
       <div class="sky">
         <span class="cloud one" aria-hidden="true">☁</span><span class="cloud two" aria-hidden="true">☁</span>
-        <div class="status" id="status" aria-live="polite">まず50mまで歩こう</div>
+        <div class="status" id="status" aria-live="polite">はじめはゆっくり進むよ</div>
         <div class="track">
-          <span class="end left">スタート</span><span class="end right">100m</span><span class="rest-label">休憩</span>
-          <div class="road"></div><div class="rest-mark" aria-hidden="true"></div>
-          <div class="walker" id="walker"><span class="zzz">Zzz</span><span class="person">🐕</span><span class="name">犬</span></div>
+          <span class="end left">スタート</span><span class="end right">100m</span><span class="boost-label" id="boostLabel">スピードアップ</span>
+          <div class="road"></div><div class="boost-mark" id="boostMark" aria-hidden="true"></div>
+          <div class="walker" id="walker"><span class="spark">!</span><span class="person">🐕</span><span class="name">犬</span></div>
         </div>
       </div>
       <div class="controls">
         <div class="control">
-          <label for="speed">速さ <output id="speedOut">10 m/秒</output></label>
-          <input id="speed" type="range" min="2" max="20" step="1" value="10">
+          <label for="firstSpeed">最初の速さ <output id="firstOut">5 m/秒</output></label>
+          <input id="firstSpeed" type="range" min="1" max="10" step="0.5" value="5">
         </div>
-        <div class="control rest">
-          <label for="restTime">休憩時間 <output id="restOut">3 秒</output></label>
-          <input id="restTime" type="range" min="0" max="10" step="0.5" value="3">
+        <div class="control boost-time">
+          <label for="boostTime">スピードアップする時刻 <output id="boostOut">6 秒</output></label>
+          <input id="boostTime" type="range" min="2" max="12" step="0.5" value="6">
         </div>
-        <div class="control view">
-          <label for="viewSpeed">見る速さ <output id="viewOut">1.0 倍</output></label>
-          <input id="viewSpeed" type="range" min="0.5" max="2" step="0.5" value="1">
+        <div class="control after-speed">
+          <label for="afterSpeed">スピードアップ後の速さ <output id="afterOut">12 m/秒</output></label>
+          <input id="afterSpeed" type="range" min="2" max="20" step="0.5" value="12">
         </div>
-        <div class="actions">
-          <button id="play" type="button">▶ 再生</button>
-          <button id="reset" class="secondary" type="button">リセット</button>
-        </div>
+        <div class="actions"><button id="play" type="button">▶ 再生</button></div>
       </div>
       <section class="diagram" aria-labelledby="graph-title">
-        <h2 id="graph-title">グラフで見ると、止まっている間は水平になる。</h2>
-        <svg id="graph" viewBox="0 0 720 278" role="img" aria-label="犬が50m地点で休憩すると距離のグラフが水平になる様子"></svg>
-        <div class="legend"><span><i class="dot" style="background:var(--a)"></i>犬</span><span><i class="dot" style="background:var(--sun)"></i>休憩</span></div>
+        <h2 id="graph-title">グラフで見ると、ここから傾きが急になる。</h2>
+        <svg id="graph" viewBox="0 0 720 278" role="img" aria-label="犬が途中から速くなると距離のグラフの傾きが急になる様子"></svg>
+        <div class="legend"><span><i class="dot" style="background:var(--a)"></i>犬</span><span><i class="dot" style="background:var(--sun)"></i>スピードアップ</span></div>
       </section>
     </section>
 
-    <section class="card results" aria-label="休憩の様子">
+    <section class="card results" aria-label="速さと傾きの様子">
       <div class="numbers">
         <div class="number-card"><span>道の長さ</span><strong>100m</strong></div>
-        <div class="number-card"><span>休憩地点</span><strong>50m</strong></div>
-        <div class="number-card"><span>速さ</span><strong id="speedResult">10m/秒</strong></div>
-        <div class="number-card rest"><span>止まっている時間</span><strong id="restResult">3秒</strong></div>
-        <div class="number-card"><span>ゴールまで</span><strong id="goalTime">13秒</strong></div>
+        <div class="number-card"><span>最初の速さ</span><strong id="firstResult">5m/秒</strong></div>
+        <div class="number-card boost"><span>スピードアップ</span><strong id="boostResult">6秒後</strong></div>
+        <div class="number-card"><span>後の速さ</span><strong id="afterResult">12m/秒</strong></div>
         <div class="number-card"><span>いまの距離</span><strong id="currentDistance">0m</strong></div>
+        <div class="number-card"><span>かかった時間</span><strong id="totalTime">11.8秒</strong></div>
       </div>
-      <p class="thought" id="thought">止まっている間、グラフは横になる。また同じ速さで進むと、同じ傾きの線になる。</p>
+      <p class="thought" id="thought">傾きが変わるところを見ると、速さが変わった時刻が分かる。</p>
+      <div class="lesson" id="lesson" aria-live="polite">
+        <p>速くなると、<strong>グラフの傾きも急になります。</strong></p>
+        <p>グラフを見ると、「どこで速くなったか」も分かります。</p>
+        <p><strong>傾きが変わる＝速さが変わる</strong></p>
+      </div>
     </section>
 
     <section class="card feedback" aria-label="感想フォーム">
@@ -176,85 +182,98 @@
   <script>
     (() => {
       const $ = (s) => document.querySelector(s);
-      const speed = $('#speed'), restTime = $('#restTime'), viewSpeed = $('#viewSpeed');
-      const walker = $('#walker'), graph = $('#graph');
+      const firstSpeed = $('#firstSpeed'), boostTime = $('#boostTime'), afterSpeed = $('#afterSpeed');
+      const walker = $('#walker'), boostMark = $('#boostMark'), boostLabel = $('#boostLabel'), graph = $('#graph');
       let raf = 0, running = false, startedAt = 0, pausedAt = 0;
-      const totalDistance = 100, restDistance = 50;
+      const totalDistance = 100, viewRate = 1.15;
 
       const tidy = (n) => Math.abs(n - Math.round(n)) < .005 ? String(Math.round(n)) : n.toFixed(1);
       const values = () => {
-        const v1 = +speed.value, rest = +restTime.value, v2 = v1, rate = +viewSpeed.value;
-        const t1 = restDistance / v1, t2 = (totalDistance - restDistance) / v2, restEnd = t1 + rest, totalT = t1 + rest + t2;
-        return { v1, rest, v2, rate, t1, restEnd, totalT };
+        const v1 = +firstSpeed.value, boostT = +boostTime.value, v2 = Math.max(+afterSpeed.value, v1 + .5);
+        const boostD = Math.min(totalDistance, v1 * boostT);
+        const totalT = boostD >= totalDistance ? totalDistance / v1 : boostT + (totalDistance - boostD) / v2;
+        return { v1, boostT, v2, boostD, totalT };
       };
       const distanceAt = (t) => {
-        const { v1, v2, t1, restEnd } = values();
-        if (t <= t1) return v1 * t;
-        if (t <= restEnd) return restDistance;
-        return Math.min(totalDistance, restDistance + v2 * (t - restEnd));
+        const { v1, boostT, v2, boostD } = values();
+        if (t <= boostT) return Math.min(totalDistance, v1 * t);
+        return Math.min(totalDistance, boostD + v2 * (t - boostT));
       };
       const phaseAt = (t) => {
-        const { t1, restEnd, totalT } = values();
-        if (t < t1) return 'walk1';
-        if (t < restEnd) return 'rest';
-        if (t < totalT) return 'walk2';
-        return 'goal';
+        const { boostT, totalT } = values();
+        if (t >= totalT) return 'goal';
+        return t < boostT ? 'before' : 'after';
       };
 
       function place(t = 0) {
+        const { boostD } = values();
         const dist = distanceAt(t);
+        const boostLeft = 4 + 92 * boostD / totalDistance;
         walker.style.left = (4 + 92 * dist / totalDistance) + '%';
+        boostMark.style.left = boostLeft + '%';
+        boostLabel.style.left = boostLeft + '%';
         const phase = phaseAt(t);
-        walker.classList.toggle('moving', running && (phase === 'walk1' || phase === 'walk2'));
-        walker.classList.toggle('resting', phase === 'rest');
+        walker.classList.toggle('moving', running && phase !== 'goal');
+        walker.classList.toggle('fast', running && phase === 'after');
         walker.classList.toggle('arrived', phase === 'goal');
       }
 
       function updateText(t = pausedAt) {
-        const { v1, rest, v2, totalT } = values();
-        $('#speedOut').value = `${tidy(v1)} m/秒`;
-        $('#restOut').value = `${tidy(rest)} 秒`;
-        $('#viewOut').value = `${(+viewSpeed.value).toFixed(1)} 倍`;
-        $('#speedResult').textContent = `${tidy(v1)}m/秒`;
-        $('#restResult').textContent = `${tidy(rest)}秒`;
-        $('#goalTime').textContent = `${tidy(totalT)}秒`;
+        const { v1, boostT, v2, boostD, totalT } = values();
+        firstSpeed.value = v1;
+        afterSpeed.value = v2;
+        $('#firstOut').value = `${tidy(v1)} m/秒`;
+        $('#boostOut').value = `${tidy(boostT)} 秒`;
+        $('#afterOut').value = `${tidy(v2)} m/秒`;
+        $('#firstResult').textContent = `${tidy(v1)}m/秒`;
+        $('#boostResult').textContent = `${tidy(boostT)}秒後`;
+        $('#afterResult').textContent = `${tidy(v2)}m/秒`;
         $('#currentDistance').textContent = `${tidy(distanceAt(t))}m`;
+        $('#totalTime').textContent = `${tidy(totalT)}秒`;
         const phase = phaseAt(t);
-        $('#status').textContent = phase === 'walk1' ? 'まず50mまで歩こう' : phase === 'rest' ? 'ここで止まるよ' : phase === 'walk2' ? '同じ速さでまた進むよ' : 'ゴール！';
-        $('#thought').textContent = phase === 'rest' ? '止まっている間、グラフは横にまっすぐ伸びる。' : '止まっている間、グラフは横になる。また同じ速さで進むと、同じ傾きの線になる。';
+        $('#status').textContent = phase === 'before' ? 'はじめはゆっくり進むよ' : phase === 'after' ? 'ここから速くなった！' : 'ゴール！';
+        $('#thought').textContent = phase === 'after' || phase === 'goal'
+          ? '速くなったあと、グラフの傾きが急になっている。'
+          : 'スピードアップ地点から線の傾きが変わる。';
+        $('#lesson').classList.toggle('show', phase === 'goal');
+        boostMark.style.opacity = boostD >= totalDistance ? '.35' : '1';
+        boostLabel.style.opacity = boostD >= totalDistance ? '.55' : '1';
+        $('#play').textContent = running ? '↻ もう一度' : '▶ 再生';
       }
 
       function update(resetTime = true) {
         cancelAnimationFrame(raf);
         running = false;
         if (resetTime) pausedAt = 0;
-        $('#play').textContent = '▶ 再生';
         const t = Math.min(pausedAt, values().totalT);
         place(t); updateText(t); drawGraph(t);
       }
 
       function play() {
         cancelAnimationFrame(raf);
+        pausedAt = 0;
         running = true;
-        startedAt = performance.now() - (pausedAt * 1000 / values().rate);
+        startedAt = performance.now();
+        $('#lesson').classList.remove('show');
         $('#play').textContent = '↻ もう一度';
         function tick(now) {
-          const { totalT, rate } = values();
-          const t = Math.min(totalT, (now - startedAt) / 1000 * rate);
+          const { totalT } = values();
+          const t = Math.min(totalT, (now - startedAt) / 1000 * viewRate);
           pausedAt = t;
           place(t); updateText(t); drawGraph(t);
           if (t < totalT && running) raf = requestAnimationFrame(tick);
-          else { running = false; place(totalT); updateText(totalT); }
+          else { running = false; pausedAt = totalT; place(totalT); updateText(totalT); drawGraph(totalT); }
         }
         raf = requestAnimationFrame(tick);
       }
 
       function drawGraph(currentT = 0) {
-        const { t1, rest, restEnd, totalT } = values();
+        const { boostT, boostD, totalT } = values();
         const maxT = Math.max(12, Math.ceil(totalT + 2));
         const L=58, R=694, T=18, B=224, W=R-L, H=B-T;
         const x = t => L + W * t / maxT, y = m => B - H * m / totalDistance;
         const currentD = distanceAt(currentT);
+        const bendT = Math.min(boostT, totalT), bendD = Math.min(boostD, totalDistance);
         let grid = '';
         for (let i=0; i<=4; i++) {
           const gx=L+W*i/4, gy=T+H*i/4;
@@ -262,33 +281,31 @@
           grid += `<line x1="${gx}" y1="${T}" x2="${gx}" y2="${B}"/><text x="${gx}" y="${B+21}" text-anchor="middle">${tidy(maxT*i/4)}</text>`;
         }
         let progressPath = `M ${x(0)} ${y(0)}`;
-        if (currentT <= t1) {
+        if (currentT <= bendT) {
           progressPath += ` L ${x(currentT)} ${y(currentD)}`;
-        } else if (currentT <= restEnd) {
-          progressPath += ` L ${x(t1)} ${y(restDistance)} L ${x(currentT)} ${y(restDistance)}`;
         } else {
-          progressPath += ` L ${x(t1)} ${y(restDistance)} L ${x(restEnd)} ${y(restDistance)} L ${x(currentT)} ${y(currentD)}`;
+          progressPath += ` L ${x(bendT)} ${y(bendD)} L ${x(currentT)} ${y(currentD)}`;
         }
+        const labelX = Math.min(R - 86, Math.max(L + 86, x(bendT) + 18));
         graph.innerHTML = `<style>.grid line{stroke:#e8e3d8;stroke-width:1}.grid text{fill:#65727d;stroke:none;font:12px system-ui,sans-serif}</style><g class="grid">${grid}</g>
           <g fill="#65727d" font-family="system-ui,sans-serif" font-size="12"><text x="376" y="268" text-anchor="middle">時間（秒）</text><text transform="translate(17 121) rotate(-90)" text-anchor="middle">スタートからの距離（m）</text></g>
-          <path d="M ${x(0)} ${y(0)} L ${x(t1)} ${y(restDistance)} L ${x(restEnd)} ${y(restDistance)} L ${x(totalT)} ${y(totalDistance)}" fill="none" stroke="#2e9d70" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".18"/>
+          <path d="M ${x(0)} ${y(0)} L ${x(bendT)} ${y(bendD)} L ${x(totalT)} ${y(totalDistance)}" fill="none" stroke="#2e9d70" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".18"/>
           <path d="${progressPath}" fill="none" stroke="#2e9d70" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <rect x="${x(t1)}" y="${y(restDistance)-8}" width="${Math.max(2, x(restEnd)-x(t1))}" height="16" rx="8" fill="#f7c948" opacity=".35"/>
-          <line x1="${x(t1)}" y1="${y(restDistance)}" x2="${x(t1)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
-          <line x1="${x(restEnd)}" y1="${y(restDistance)}" x2="${x(restEnd)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
-          <line x1="${x(t1)}" y1="${B}" x2="${x(t1)}" y2="${B+7}" stroke="#755900" stroke-width="2"/>
-          <line x1="${x(restEnd)}" y1="${B}" x2="${x(restEnd)}" y2="${B+7}" stroke="#755900" stroke-width="2"/>
-          <text x="${x(t1)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(t1)}</text>
-          <text x="${x(restEnd)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(restEnd)}</text>
+          <line x1="${x(bendT)}" y1="${y(bendD)}" x2="${x(bendT)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
+          <line x1="${L}" y1="${y(bendD)}" x2="${x(bendT)}" y2="${y(bendD)}" stroke="#a59b85" stroke-dasharray="5 5"/>
+          <line x1="${x(totalT)}" y1="${y(totalDistance)}" x2="${x(totalT)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
+          <text x="${x(bendT)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(bendT)}秒</text>
+          <text x="${L-10}" y="${y(bendD)+4}" text-anchor="end" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(bendD)}m</text>
+          <text x="${x(totalT)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(totalT)}秒</text>
+          <circle cx="${x(bendT)}" cy="${y(bendD)}" r="10" fill="#f7c948" stroke="#9c7800" stroke-width="3"/>
+          <circle cx="${x(totalT)}" cy="${y(totalDistance)}" r="7" fill="#fffefa" stroke="#2e9d70" stroke-width="3"/>
           <circle cx="${x(currentT)}" cy="${y(currentD)}" r="8" fill="#ed6a5a" stroke="#fffefa" stroke-width="3"/>
-          <text x="${Math.min(R-74, Math.max(L+74, (x(t1)+x(restEnd))/2))}" y="${y(restDistance)-18}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="13" font-weight="800">水平</text>
-          <text x="${x(t1)-10}" y="${Math.max(T+16,y(restDistance)-18)}" text-anchor="end" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="700">${tidy(rest)}秒休憩</text>`;
+          <text x="${x(bendT)-12}" y="${Math.max(T+16,y(bendD)-18)}" text-anchor="end" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">速くなる</text>
+          <text x="${labelX}" y="${Math.min(B - 8, Math.max(T + 18, y(bendD) + 26))}" text-anchor="start" fill="#25313c" font-family="system-ui,sans-serif" font-size="13" font-weight="800">ここから急な傾き</text>`;
       }
 
-      [speed, restTime].forEach(input => input.addEventListener('input', () => update(true)));
-      viewSpeed.addEventListener('input', () => { updateText(pausedAt); if (!running) drawGraph(pausedAt); });
-      $('#play').addEventListener('click', () => { pausedAt = 0; play(); });
-      $('#reset').addEventListener('click', () => update(true));
+      [firstSpeed, boostTime, afterSpeed].forEach(input => input.addEventListener('input', () => update(true)));
+      $('#play').addEventListener('click', play);
       update();
     })();
   </script>
