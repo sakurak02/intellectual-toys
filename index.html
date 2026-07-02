@@ -105,6 +105,72 @@ h1{
     margin-top:50px;
 }
 
+.animal-book-card{
+    max-width:620px;
+    margin:24px auto 0;
+    padding:18px 20px;
+    border:1px solid #e2e2e2;
+    border-radius:10px;
+    background:white;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(128,88,20,.08);
+}
+
+.animal-book-card h2{
+    margin:0 0 8px;
+    font-size:1.25rem;
+}
+
+.animal-book-card p{
+    margin:8px 0;
+}
+
+.animal-preview{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:12px auto 14px;
+    font-size:1.8rem;
+    line-height:1;
+}
+
+.animal-preview span{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:2.2rem;
+    height:2.2rem;
+    border:1px solid #e8dfcd;
+    border-radius:50%;
+    background:#fff6dc;
+    box-shadow:0 2px 5px rgba(128,88,20,.08);
+}
+
+.animal-book-link{
+    display:inline-block;
+    margin-top:4px;
+    padding:9px 18px;
+    border:1px solid #ddd;
+    border-radius:999px;
+    color:inherit;
+    background:white;
+    font-weight:bold;
+    text-decoration:none;
+    transition:background .15s ease,border-color .15s ease,transform .15s ease;
+}
+
+.animal-book-link:hover,
+.animal-book-link:focus-visible{
+    border-color:#d49b3d;
+    background:#fff1c9;
+    transform:translateY(-1px);
+}
+
+.animal-book-link:focus-visible{
+    outline:3px solid rgba(196,132,29,.35);
+    outline-offset:2px;
+}
+
 .category{
     margin-bottom:30px;
 }
@@ -199,6 +265,23 @@ footer{
 <section aria-labelledby="shelf-title">
 <h2 class="shelf-title" id="shelf-title">作品棚</h2>
 <div class="grid100" id="grid"></div>
+</section>
+
+<section class="animal-book-card" aria-labelledby="animal-book-title">
+<h2 id="animal-book-title">📖 どうぶつ図鑑</h2>
+<p>
+知的玩具で遊んでチャレンジに正解すると、<br>
+新しいなかまが少しずつ増えていきます。
+</p>
+<p>まずは100匹、集めてみよう！</p>
+<div class="animal-preview" aria-label="どうぶつのなかま">
+  <span>🐰</span>
+  <span>🦊</span>
+  <span>🐧</span>
+  <span>🐼</span>
+  <span>🐢</span>
+</div>
+<a class="animal-book-link" href="animal-book/index.html">📖 どうぶつ図鑑を見る</a>
 </section>
 
 <div class="section">

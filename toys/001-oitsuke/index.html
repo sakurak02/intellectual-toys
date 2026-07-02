@@ -98,6 +98,21 @@
     .number-card span { display: block; color: var(--muted); font-size: .76rem; }
     .number-card strong { display: block; margin-top: 2px; font-size: clamp(1.05rem, 3.5vw, 1.35rem); font-variant-numeric: tabular-nums; }
     .number-card.catch { background: var(--cream); }
+    .challenge { margin-top: 18px; padding: 24px; text-align: center; }
+    .challenge h2 { margin: 0 0 12px; color: var(--rabbit); font-size: clamp(1.35rem, 5vw, 1.9rem); }
+    .challenge p { margin: 8px 0; font-weight: 700; }
+    .challenge .hint { color: var(--muted); }
+    .answer-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .answer-row input { width: min(180px, 100%); min-height: 48px; border: 2px solid var(--line); border-radius: 999px; padding: 8px 16px; color: var(--ink); background: white; font: inherit; font-weight: 800; text-align: center; }
+    .answer-row input:focus { outline: 3px solid rgba(237,106,90,.22); border-color: var(--rabbit); }
+    .challenge-message { min-height: 1.6em; margin-top: 14px; color: var(--rabbit); font-weight: 800; }
+    .reward { display: none; margin-top: 18px; padding: 18px; border-radius: 18px; background: var(--cream); }
+    .reward.show { display: block; }
+    .reward .sparkles { margin: 2px 0; font-size: 1.4rem; letter-spacing: .2em; }
+    .reward .animal { margin: 4px 0; font-size: 3rem; line-height: 1; }
+    .reward-links { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .reward-links a { display: inline-block; padding: 10px 18px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: white; font-weight: 800; }
+    .reward-links a:hover { background: #fffdf8; }
     .feedback { margin-top: 28px; padding: 25px; text-align: center; }
     .feedback p { margin: 0 0 10px; font-weight: 700; }
     .feedback a { display: inline-block; padding: 8px 18px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; background: white; }
@@ -116,6 +131,10 @@
       .diagram-head { padding: 0 6px; }
       canvas { height: 245px; }
       .numbers { grid-template-columns: 1fr; }
+      .challenge { padding: 20px 14px; }
+      .answer-row { display: grid; grid-template-columns: 1fr; }
+      .answer-row input, .answer-row button { width: 100%; }
+      .reward-links { display: grid; grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) { .runner.moving .animal { animation: none; } }
   </style>
@@ -176,6 +195,28 @@
         <div class="number-card"><span>ウサギの出発おくれ</span><strong id="resultDelay">3.0秒</strong></div>
         <div class="number-card catch"><span>追いついた地点の距離</span><strong id="resultCatchDistance">6.0m</strong></div>
         <div class="number-card catch"><span>追いついた時間</span><strong id="resultCatchTime">6.0秒</strong></div>
+      </div>
+    </section>
+
+    <section class="card challenge" aria-labelledby="challenge-title">
+      <h2 id="challenge-title">🎁 チャレンジしてみよう！</h2>
+      <p>カメの速さを 2m/秒、<br>ウサギの速さを 4m/秒、<br>ウサギの出発おくれを 4秒にすると、</p>
+      <p>何秒後に追いつくでしょう？</p>
+      <p class="hint">まずは考えてみよう。<br>わからなければ、スライダーを動かして確かめよう！</p>
+      <div class="answer-row">
+        <input id="challengeAnswer" type="text" inputmode="numeric" autocomplete="off" aria-label="最後のチャレンジの答え">
+        <button id="checkChallenge" type="button">こたえをみる</button>
+      </div>
+      <p class="challenge-message" id="challengeMessage" aria-live="polite"></p>
+      <div class="reward" id="challengeReward" aria-live="polite">
+        <p>🎉 正解！</p>
+        <p class="sparkles">✨✨✨</p>
+        <p class="animal">🐰</p>
+        <p>新しいなかまが増えた！</p>
+        <div class="reward-links">
+          <a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a>
+          <a href="../002-deae/index.html">➡ 次の知的玩具へ</a>
+        </div>
       </div>
     </section>
 
@@ -319,6 +360,31 @@
       $('#pause').addEventListener('click', () => {
         if (playing) { playing=false; cancelAnimationFrame(raf); $('#pause').textContent='つづける'; }
         else { playing=true; startAt=performance.now()-elapsed*1000/(reducedMotion?2:1); $('#pause').textContent='一時停止'; raf=requestAnimationFrame(tick); }
+      });
+      $('#checkChallenge').addEventListener('click', () => {
+        const normalized = $('#challengeAnswer').value
+          .replace(/[０-９]/g, char => String.fromCharCode(char.charCodeAt(0) - 0xFEE0))
+          .replace(/\s+/g, '')
+          .replace(/秒/g, '');
+        const correct = normalized === '8';
+        if (correct) {
+          const storageKey = 'intellectualToysAnimalBook';
+          let acquired = [];
+          try {
+            const raw = localStorage.getItem(storageKey);
+            const parsed = raw ? JSON.parse(raw) : [];
+            if (Array.isArray(parsed)) acquired = parsed.map(String);
+            else if (parsed && typeof parsed === 'object') acquired = Object.keys(parsed).filter(id => parsed[id]);
+          } catch (error) {
+            acquired = [];
+          }
+          if (!acquired.includes('001')) acquired.push('001');
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(acquired));
+          } catch (error) {}
+        }
+        $('#challengeMessage').textContent = correct ? '' : 'もう一度スライダーを動かして確かめてみよう。';
+        $('#challengeReward').classList.toggle('show', correct);
       });
       addEventListener('resize', render);
       reset(true);
