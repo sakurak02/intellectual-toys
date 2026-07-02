@@ -184,27 +184,47 @@
 
   <script>
     (() => {
-      const storageKey = 'intellectualToysAnimalBook';
+      const storageKey = 'intellectualToysAnimalBook.v1';
+      const legacyStorageKeys = [
+        'intellectualToysAnimalBook',
+        'animalBook',
+        'animalCollection',
+        'intellectualToysAnimals'
+      ];
       const animals = {
         '001': { emoji: '🐰', name: 'うさぎ' },
-        '002': { emoji: '🦊', name: 'きつね' }
+        '002': { emoji: '🦊', name: 'きつね' },
+        '003': { emoji: '🐧', name: 'ペンギン' }
       };
       const grid = document.getElementById('bookGrid');
       const progress = document.getElementById('progress');
 
-      function readAcquired() {
+      function normalizeAcquired(value) {
+        if (Array.isArray(value)) return value.map(String);
+        if (value && typeof value === 'object') {
+          return Object.keys(value).filter(id => value[id]);
+        }
+        return [];
+      }
+
+      function readStoredIds(key) {
         try {
-          const raw = localStorage.getItem(storageKey);
+          const raw = localStorage.getItem(key);
           if (!raw) return [];
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) return parsed.map(String);
-          if (parsed && typeof parsed === 'object') {
-            return Object.keys(parsed).filter(id => parsed[id]);
-          }
+          return normalizeAcquired(JSON.parse(raw));
         } catch (error) {
           return [];
         }
-        return [];
+      }
+
+      function readAcquired() {
+        const ids = new Set(readStoredIds(storageKey));
+        legacyStorageKeys.forEach(key => readStoredIds(key).forEach(id => ids.add(id)));
+        const acquired = [...ids].sort();
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(acquired));
+        } catch (error) {}
+        return acquired;
       }
 
       const acquired = new Set(readAcquired());

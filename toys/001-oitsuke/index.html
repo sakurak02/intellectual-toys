@@ -368,19 +368,26 @@
           .replace(/秒/g, '');
         const correct = normalized === '8';
         if (correct) {
-          const storageKey = 'intellectualToysAnimalBook';
-          let acquired = [];
+          const storageKey = 'intellectualToysAnimalBook.v1';
+          const legacyStorageKeys = ['intellectualToysAnimalBook', 'animalBook', 'animalCollection', 'intellectualToysAnimals'];
+          const normalizeAcquired = value => {
+            if (Array.isArray(value)) return value.map(String);
+            if (value && typeof value === 'object') return Object.keys(value).filter(id => value[id]);
+            return [];
+          };
+          const readStoredIds = key => {
+            try {
+              const raw = localStorage.getItem(key);
+              return raw ? normalizeAcquired(JSON.parse(raw)) : [];
+            } catch (error) {
+              return [];
+            }
+          };
+          const acquired = new Set(readStoredIds(storageKey));
+          legacyStorageKeys.forEach(key => readStoredIds(key).forEach(id => acquired.add(id)));
+          acquired.add('001');
           try {
-            const raw = localStorage.getItem(storageKey);
-            const parsed = raw ? JSON.parse(raw) : [];
-            if (Array.isArray(parsed)) acquired = parsed.map(String);
-            else if (parsed && typeof parsed === 'object') acquired = Object.keys(parsed).filter(id => parsed[id]);
-          } catch (error) {
-            acquired = [];
-          }
-          if (!acquired.includes('001')) acquired.push('001');
-          try {
-            localStorage.setItem(storageKey, JSON.stringify(acquired));
+            localStorage.setItem(storageKey, JSON.stringify([...acquired].sort()));
           } catch (error) {}
         }
         $('#challengeMessage').textContent = correct ? '' : 'もう一度スライダーを動かして確かめてみよう。';
