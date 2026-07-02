@@ -195,6 +195,7 @@
       const canvas = $('#chart'), ctx = canvas.getContext('2d');
       let startAt = 0, elapsed = 0, playing = false, raf = 0, caughtCelebrated = false;
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const tidy = n => Math.abs(n - Math.round(n)) < .005 ? String(Math.round(n)) : n.toFixed(1);
 
       function values() {
         return { vt: +turtleSpeed.value, vr: +rabbitSpeed.value, wait: +delay.value };
@@ -282,7 +283,7 @@
         ctx.textAlign = 'center'; ctx.textBaseline = 'top';
         for (let i=0; i<=4; i++) {
           const x = pad.l + pw*i/4; ctx.beginPath(); ctx.moveTo(x,pad.t); ctx.lineTo(x,pad.t+ph); ctx.stroke();
-          ctx.fillText((maxT*i/4).toFixed(0), x, pad.t+ph+7);
+          ctx.fillText(tidy(maxT*i/4), x, pad.t+ph+7);
         }
         ctx.fillStyle = '#65727d'; ctx.font = '12px system-ui';
         ctx.fillText('時間（秒）', pad.l+pw/2, h-16);
@@ -306,8 +307,8 @@
           ctx.beginPath(); ctx.moveTo(x,pad.t+ph); ctx.lineTo(x,pad.t+ph+7); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(pad.l-7,y); ctx.lineTo(pad.l,y); ctx.stroke();
           ctx.fillStyle = '#755900'; ctx.font='bold 11px system-ui';
-          ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(hit.toFixed(1), x, pad.t+ph+7);
-          ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText(catchD.toFixed(1), pad.l-10, y);
+          ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(tidy(hit), x, pad.t+ph+7);
+          ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText(tidy(catchD), pad.l-10, y);
           ctx.beginPath(); ctx.fillStyle = elapsed >= hit ? '#f7c948' : '#fffefa'; ctx.strokeStyle='#b88a00'; ctx.lineWidth=2;
           ctx.arc(x,y,6,0,Math.PI*2); ctx.fill(); ctx.stroke();
           if (elapsed >= hit) { ctx.fillStyle='#755900'; ctx.font='bold 11px system-ui'; ctx.textAlign='center'; ctx.fillText('追いついた！',x,Math.max(2,y-23)); }
