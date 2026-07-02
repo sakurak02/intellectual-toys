@@ -95,6 +95,30 @@
     .lesson p { margin: 0 0 8px; }
     .lesson p:last-child { margin-bottom: 0; }
     .lesson strong { color: #b94a3d; }
+    .challenge { margin-top: 18px; padding: 22px; }
+    .challenge h2 { margin: 0 0 10px; font-size: clamp(1.25rem, 4vw, 1.7rem); line-height: 1.3; }
+    .challenge p { margin: 7px 0; font-weight: 700; }
+    .challenge .hint { color: var(--muted); }
+    .answer-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
+    .answer-row label { font-weight: 800; }
+    .answer-row input {
+      width: min(180px, 100%); min-height: 48px; padding: 10px 14px;
+      border: 2px solid var(--line); border-radius: 14px; background: #fffefa;
+      color: var(--ink); font: inherit; font-size: 1.15rem; font-weight: 800;
+    }
+    .answer-row .unit { font-weight: 800; }
+    .answer-row button { min-width: 142px; }
+    .challenge-result { display: none; margin-top: 16px; padding: 16px; border-radius: 16px; background: #f8f6ef; text-align: center; font-weight: 800; }
+    .challenge-result.show { display: block; }
+    .challenge-result.correct { background: var(--cream); }
+    .challenge-result p { margin: 6px 0; }
+    .turtle-prize { margin: 8px 0; font-size: 2.6rem; line-height: 1; }
+    .challenge-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
+    .challenge-links a {
+      display: inline-block; padding: 10px 16px; border: 1px solid var(--line);
+      border-radius: 999px; color: var(--ink); text-decoration: none; background: white; font-weight: 800;
+    }
+    .challenge-links a:hover { background: #fffdf8; }
     .feedback { margin-top: 18px; padding: 22px; text-align: center; }
     .feedback p { margin: 0 0 10px; font-weight: 700; }
     .feedback a { display: inline-block; padding: 10px 20px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: white; font-weight: 800; }
@@ -117,6 +141,10 @@
       .diagram h2 { padding: 0 6px; }
       svg { height: auto; }
       .numbers { grid-template-columns: 1fr; }
+      .challenge { padding: 18px; }
+      .answer-row { display: grid; grid-template-columns: 1fr auto; }
+      .answer-row label, .answer-row button { grid-column: 1 / -1; }
+      .answer-row input { width: 100%; }
     }
     @media (max-width: 380px) { .boost-label { font-size: .63rem; } }
     @media (prefers-reduced-motion: reduce) {
@@ -181,6 +209,22 @@
         <p>グラフを見ると、「どこで速くなったか」も分かります。</p>
         <p><strong>傾きが変わる＝速さが変わる</strong></p>
       </div>
+    </section>
+
+    <section class="card challenge" aria-labelledby="challenge-title">
+      <h2 id="challenge-title">🎁 チャレンジしてみよう！</h2>
+      <p>最初の速さは <strong>8 m/秒</strong>。</p>
+      <p><strong>5秒後</strong> に、<strong>15 m/秒</strong> にスピードアップします。</p>
+      <p><strong>ゴールまで何秒かかるでしょう？</strong></p>
+      <p class="hint">まずは考えてみよう。</p>
+      <p class="hint">わからなければスライダーを動かして確かめよう！</p>
+      <div class="answer-row">
+        <label for="challengeAnswer">答え</label>
+        <input id="challengeAnswer" type="text" inputmode="numeric" autocomplete="off" aria-describedby="challengeUnit challengeResult">
+        <span class="unit" id="challengeUnit">秒</span>
+        <button id="checkChallenge" type="button">こたえをみる</button>
+      </div>
+      <div class="challenge-result" id="challengeResult" aria-live="polite"></div>
     </section>
 
     <section class="card feedback" aria-label="感想フォーム">
@@ -316,6 +360,33 @@
 
       [firstSpeed, boostTime, afterSpeed].forEach(input => input.addEventListener('input', () => update(true)));
       $('#play').addEventListener('click', play);
+      $('#checkChallenge').addEventListener('click', () => {
+        const answer = $('#challengeAnswer').value.trim().replace(/[０-９]/g, char => String.fromCharCode(char.charCodeAt(0) - 0xFEE0));
+        const result = $('#challengeResult');
+        const correct = answer === '9' || answer === '9秒';
+        if (correct) {
+          const storageKey = 'intellectualToysAnimalBook.v1';
+          const legacyStorageKeys = ['intellectualToysAnimalBook', 'animalBook', 'animalCollection', 'intellectualToysAnimals'];
+          const acquired = new Set();
+          [storageKey, ...legacyStorageKeys].forEach(key => {
+            try {
+              const raw = localStorage.getItem(key);
+              if (!raw) return;
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed)) parsed.map(String).forEach(id => acquired.add(id));
+              else if (parsed && typeof parsed === 'object') Object.keys(parsed).filter(id => parsed[id]).forEach(id => acquired.add(id));
+            } catch (error) {}
+          });
+          acquired.add('005');
+          try {
+            localStorage.setItem(storageKey, JSON.stringify([...acquired].sort()));
+          } catch (error) {}
+        }
+        result.className = `challenge-result show ${correct ? 'correct' : 'retry'}`;
+        result.innerHTML = correct
+          ? `<p>🎉 正解！</p><p>✨✨✨</p><div class="turtle-prize" aria-hidden="true">🐢</div><p>新しいなかまが増えた！</p><div class="challenge-links"><a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a><a href="../../index.html">➡ 次の知的玩具へ</a></div>`
+          : `<p>もう一度ためしてみよう。</p><p>スライダーを</p><p>最初の速さ 8</p><p>スピードアップする時刻 5</p><p>スピードアップ後の速さ 15</p><p>にして動きを見てみよう！</p>`;
+      });
       update();
     })();
   </script>
