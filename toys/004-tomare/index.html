@@ -40,7 +40,7 @@
     .status {
       position: relative; z-index: 2; width: fit-content; min-height: 38px; margin: 0 auto;
       padding: 5px 15px; border-radius: 999px; background: rgba(255,255,255,.86);
-      font-weight: 800; font-variant-numeric: tabular-nums; box-shadow: 0 4px 15px rgba(53,87,94,.08);
+      font-weight: 800; font-variant-numeric: tabular-nums; text-align: center; white-space: pre-line; box-shadow: 0 4px 15px rgba(53,87,94,.08);
     }
     .track { position: absolute; left: 28px; right: 28px; bottom: 18px; height: 112px; }
     .road { position: absolute; left: 0; right: 0; bottom: 0; height: 48px; border-radius: 25px; background: var(--road); box-shadow: inset 0 -5px 0 #d0c9ba; }
@@ -132,7 +132,8 @@
     <section class="card playground" aria-label="途中で休憩して歩くアニメーション">
       <div class="sky">
         <span class="cloud one" aria-hidden="true">☁</span><span class="cloud two" aria-hidden="true">☁</span>
-        <div class="status" id="status" aria-live="polite">まず50mまで歩こう</div>
+        <div class="status" id="status" aria-live="polite">全部で100mの道を歩くよ
+まず50mまで歩こう</div>
         <div class="track">
           <span class="end left">スタート</span><span class="end right">100m</span><span class="rest-label">休憩</span>
           <div class="road"></div><div class="rest-mark" aria-hidden="true"></div>
@@ -229,7 +230,7 @@
         $('#goalTime').textContent = `${tidy(totalT)}秒`;
         $('#currentDistance').textContent = `${tidy(distanceAt(t))}m`;
         const phase = phaseAt(t);
-        $('#status').textContent = phase === 'walk1' ? 'まず50mまで歩こう' : phase === 'rest' ? 'ここで止まるよ' : phase === 'walk2' ? '同じ速さでまた進むよ' : 'ゴール！';
+        $('#status').textContent = phase === 'walk1' ? '全部で100mの道を歩くよ\nまず50mまで歩こう' : phase === 'rest' ? 'ここで止まるよ' : phase === 'walk2' ? '同じ速さでまた進むよ' : 'ゴール！';
         $('#thought').textContent = phase === 'rest' ? '止まっている間、グラフは横にまっすぐ伸びる。' : '止まっている間、グラフは横になる。また同じ速さで進むと、同じ傾きの線になる。';
       }
 
@@ -285,10 +286,13 @@
           <rect x="${x(t1)}" y="${y(restDistance)-8}" width="${Math.max(2, x(restEnd)-x(t1))}" height="16" rx="8" fill="#f7c948" opacity=".35"/>
           <line x1="${x(t1)}" y1="${y(restDistance)}" x2="${x(t1)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
           <line x1="${x(restEnd)}" y1="${y(restDistance)}" x2="${x(restEnd)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
+          <line x1="${x(totalT)}" y1="${y(totalDistance)}" x2="${x(totalT)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
           <line x1="${x(t1)}" y1="${B}" x2="${x(t1)}" y2="${B+7}" stroke="#755900" stroke-width="2"/>
           <line x1="${x(restEnd)}" y1="${B}" x2="${x(restEnd)}" y2="${B+7}" stroke="#755900" stroke-width="2"/>
+          <line x1="${x(totalT)}" y1="${B}" x2="${x(totalT)}" y2="${B+7}" stroke="#755900" stroke-width="2"/>
           <text x="${x(t1)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(t1)}</text>
           <text x="${x(restEnd)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(restEnd)}</text>
+          <text x="${x(totalT)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(totalT)}</text>
           <circle cx="${x(currentT)}" cy="${y(currentD)}" r="8" fill="#ed6a5a" stroke="#fffefa" stroke-width="3"/>
           <text x="${Math.min(R-74, Math.max(L+74, (x(t1)+x(restEnd))/2))}" y="${y(restDistance)-18}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="13" font-weight="800">水平</text>
           <text x="${x(t1)-10}" y="${Math.max(T+16,y(restDistance)-18)}" text-anchor="end" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="700">${tidy(rest)}秒休憩</text>`;
