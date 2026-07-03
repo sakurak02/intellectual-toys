@@ -90,7 +90,8 @@
     }
     .animal-cell {
       min-width: 0;
-      aspect-ratio: 1;
+      width: 100%;
+      height: 96px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -109,14 +110,23 @@
       font-size: clamp(1.3rem, 4vw, 2rem);
       line-height: 1;
     }
+    .animal-image {
+      display: block;
+      width: 70%;
+      height: auto;
+      max-height: 70px;
+      object-fit: contain;
+      min-height: 0;
+    }
     .placeholder {
       color: #d5ccba;
       font-size: clamp(1.2rem, 3.6vw, 1.8rem);
       line-height: 1;
     }
     .animal-number {
+      margin-top: 4px;
       color: var(--muted);
-      font-size: .68rem;
+      font-size: 12px;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
     }
@@ -198,6 +208,9 @@
         '004': { emoji: '🐼', name: 'パンダ' },
         '005': { emoji: '🐢', name: 'カメ' }
       };
+      const animalImages = {
+        '001': '../assets/animals/001.png'
+      };
       const grid = document.getElementById('bookGrid');
       const progress = document.getElementById('progress');
 
@@ -240,10 +253,16 @@
         cell.className = 'animal-cell' + (isAcquired ? ' acquired' : '');
         cell.setAttribute('aria-label', isAcquired ? `${id} ${animal.name} 取得済み` : `${id} 未取得`);
 
-        const mark = document.createElement('span');
-        mark.className = isAcquired ? 'animal' : 'placeholder';
-        mark.textContent = isAcquired ? animal.emoji : '○';
-        mark.setAttribute('aria-hidden', 'true');
+        const imageSrc = isAcquired ? animalImages[id] : null;
+        const mark = document.createElement(imageSrc ? 'img' : 'span');
+        mark.className = imageSrc ? 'animal-image' : isAcquired ? 'animal' : 'placeholder';
+        if (imageSrc) {
+          mark.src = imageSrc;
+          mark.alt = animal.name;
+        } else {
+          mark.textContent = isAcquired ? animal.emoji : '○';
+          mark.setAttribute('aria-hidden', 'true');
+        }
 
         const number = document.createElement('span');
         number.className = 'animal-number';
