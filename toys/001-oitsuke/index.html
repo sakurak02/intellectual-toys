@@ -211,7 +211,7 @@
       <div class="reward" id="challengeReward" aria-live="polite">
         <p>🎉 正解！</p>
         <p class="sparkles">✨✨✨</p>
-        <img class="animal" src="../../assets/animals/001.png" alt="うさぎ">
+        <img id="result-animal" class="animal" src="../../assets/animals/001.png" alt="">
         <p>新しいなかまが増えた！</p>
         <div class="reward-links">
           <a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a>
@@ -231,6 +231,14 @@
   <script>
     (() => {
       const $ = (s) => document.querySelector(s);
+      const animals = {
+        '001': 'うさぎ',
+        '002': 'きつね',
+        '003': 'ハムスター',
+        '004': 'いぬ',
+        '005': 'ねずみ'
+      };
+      const animalId = '001';
       const turtleSpeed = $('#turtleSpeed'), rabbitSpeed = $('#rabbitSpeed'), delay = $('#delay');
       const turtle = $('#turtle'), rabbit = $('#rabbit'), status = $('#status');
       const canvas = $('#chart'), ctx = canvas.getContext('2d');
@@ -393,6 +401,8 @@
         $('#challengeMessage').textContent = correct ? '' : 'もう一度スライダーを動かして確かめてみよう。';
         $('#challengeReward').classList.toggle('show', correct);
       });
+      $('#result-animal').src = `../../assets/animals/${animalId}.png`;
+      $('#result-animal').alt = animals[animalId];
       addEventListener('resize', render);
       reset(true);
     })();

@@ -236,6 +236,14 @@
   <script>
     (() => {
       const $ = (s) => document.querySelector(s);
+      const animals = {
+        '001': 'うさぎ',
+        '002': 'きつね',
+        '003': 'ハムスター',
+        '004': 'いぬ',
+        '005': 'ねずみ'
+      };
+      const animalId = '005';
       const firstSpeed = $('#firstSpeed'), boostTime = $('#boostTime'), afterSpeed = $('#afterSpeed');
       const walker = $('#walker'), boostMark = $('#boostMark'), boostLabel = $('#boostLabel'), graph = $('#graph');
       let raf = 0, running = false, startedAt = 0, pausedAt = 0;
@@ -384,7 +392,7 @@
         }
         result.className = `challenge-result show ${correct ? 'correct' : 'retry'}`;
         result.innerHTML = correct
-          ? `<p>🎉 正解！</p><p>✨✨✨</p><div class="turtle-prize" aria-hidden="true">🐢</div><p>新しいなかまが増えた！</p><div class="challenge-links"><a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a><a href="../../index.html">➡ 次の知的玩具へ</a></div>`
+          ? `<p>🎉 正解！</p><p>✨✨✨</p><img class="turtle-prize" src="../../assets/animals/${animalId}.png" alt="${animals[animalId]}" width="80" height="80"><p>新しいなかまが増えた！</p><div class="challenge-links"><a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a><a href="../../index.html">➡ 次の知的玩具へ</a></div>`
           : `<p>もう一度ためしてみよう。</p><p>スライダーを</p><p>最初の速さ 8</p><p>スピードアップする時刻 5</p><p>スピードアップ後の速さ 15</p><p>にして動きを見てみよう！</p>`;
       });
       update();
