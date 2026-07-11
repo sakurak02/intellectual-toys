@@ -247,7 +247,10 @@
       }
 
       const acquired = new Set(readAcquired());
-      progress.textContent = acquired.size + ' / 100';
+      const validAcquiredCount = new Set(
+        readStoredIds(storageKey).filter(id => Object.prototype.hasOwnProperty.call(animals, id))
+      ).size;
+      progress.textContent = `コレクション ${validAcquiredCount} / 100`;
 
       for (let i = 1; i <= 100; i++) {
         const id = String(i).padStart(3, '0');

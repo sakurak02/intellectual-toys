@@ -147,7 +147,7 @@
 
     /* ---- さんすけ (floating mascot) ---- */
     .mascot-dock { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; align-items: flex-end; gap: 10px; max-width: min(300px, 78vw); }
-    .speech { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; font-size: .8rem; font-weight: 700; box-shadow: 0 8px 20px rgba(48,68,61,.12); position: relative; max-width: 220px; }
+    .speech { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; font-size: .8rem; font-weight: 700; box-shadow: 0 8px 20px rgba(48,68,61,.12); position: relative; max-width: 220px; white-space: pre-line; }
     .speech::after { content: ""; position: absolute; right: -8px; bottom: 14px; border: 8px solid transparent; border-left-color: #fff; }
     .mascot { width: 58px; height: 58px; flex-shrink: 0; filter: drop-shadow(0 6px 8px rgba(48,68,61,.25)); }
     .mascot.bounce { animation: bounce .5s ease; }
@@ -305,7 +305,7 @@
         <p>🎉 正解！</p>
         <p class="sparkles">✨✨✨</p>
         <img id="result-animal" class="animal" src="../../assets/animals/001.png" alt="">
-        <p>新しいなかまが増えた！</p>
+        <p>新しいコレクションが増えた！</p>
         <div class="reward-links">
           <a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a>
           <a href="../002-saatsumezan/index.html">➡ 次の知的玩具へ</a>
@@ -523,7 +523,7 @@
           legacyStorageKeys.forEach(key => readStoredIds(key).forEach(id => acquired.add(id)));
           acquired.add(animalId);
           try { localStorage.setItem(storageKey, JSON.stringify([...acquired].sort())); } catch (error) {}
-          setMascot('happy', 'やったね！なかまが増えたよ！');
+          setMascot('happy', 'やったね！\nコレクションが増えたよ！');
         } else {
           setMascot('thinking', 'おしい！もう一度考えてみよう。');
         }
