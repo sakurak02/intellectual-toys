@@ -194,7 +194,7 @@
       <div class="reward" id="challengeReward" aria-live="polite">
         <p>🎉 正解！</p>
         <p class="sparkles">✨✨✨</p>
-        <img id="result-animal" class="animal" src="../../assets/animals/002.png" alt="">
+        <img id="result-animal" class="animal" src="../../assets/002.png" alt="">
         <p>新しいなかまが増えた！</p>
         <div class="reward-links">
           <a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a>
@@ -330,7 +330,7 @@
         $('#challengeMessage').textContent = correct ? '' : 'もう一度ためしてみよう。スライダーを 6 と 4 にして、出会う時間を見てみよう！';
         $('#challengeReward').classList.toggle('show', correct);
       });
-      $('#result-animal').src = `../../assets/animals/${animalId}.png`;
+      $('#result-animal').src = `../../assets/${animalId}.png`;
       $('#result-animal').alt = animals[animalId];
       update();
     })();

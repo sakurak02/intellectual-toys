@@ -354,7 +354,7 @@
         }
         result.className = `challenge-result show ${correct ? 'correct' : 'retry'}`;
         result.innerHTML = correct
-          ? `<p>🎉 正解！</p><p>✨✨✨</p><img class="penguin-prize" src="../../assets/animals/${animalId}.png" alt="${animals[animalId]}" width="80" height="80"><p>新しいなかまが増えた！</p><div class="challenge-links"><a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a><a href="../004-soutouzan/index.html">➡ 次の知的玩具へ</a></div>`
+          ? `<p>🎉 正解！</p><p>✨✨✨</p><img class="penguin-prize" src="../../assets/${animalId}.png" alt="${animals[animalId]}" width="80" height="80"><p>新しいなかまが増えた！</p><div class="challenge-links"><a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a><a href="../004-soutouzan/index.html">➡ 次の知的玩具へ</a></div>`
           : `<p>もう一度ためしてみよう。</p><p>スライダーを「速さ 5」「折り返し地点 80」にして、動きを見てみよう！</p>`;
       });
       update();
