@@ -13,375 +13,653 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fffaf0">
-  <title>#004 止まれ！｜知的玩具工房</title>
+  <title>#004 けずって みつけよう｜知的玩具工房</title>
   <style>
+    /* ============================================================
+       共通部分：デザインシステム（色・カード・ボタンなど）
+       ── どの単元のページでもこのまま使い回します
+       ============================================================ */
     :root {
-      --ink: #25313c; --muted: #65727d; --paper: #fffdf8; --cream: #fff6dc;
-      --road: #e3ded2; --a: #2e9d70; --b: #ed6a5a; --sun: #f7c948; --line: #ded8ca;
+      --ink: #25313c;
+      --muted: #65727d;
+      --paper: #fffdf8;
+      --cream: #fff6dc;
+      --road: #e3ded2;
+      --turtle: #2e9d70;
+      --rabbit: #ed6a5a;
+      --sun: #f7c948;
+      --line: #ded8ca;
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0; color: var(--ink);
-      background: radial-gradient(circle at 10% 8%, #fff1b9 0 7%, transparent 7.2%), linear-gradient(180deg, #fffaf0 0%, #f4fbf8 100%);
-      font-family: "Hiragino Sans", "Yu Gothic", system-ui, sans-serif; line-height: 1.6;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 8%, #fff1b9 0 7%, transparent 7.2%),
+        linear-gradient(180deg, #fffaf0 0%, #f4fbf8 100%);
+      font-family: "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+      line-height: 1.6;
     }
+    a { color: inherit; }
     .page { width: min(920px, calc(100% - 28px)); margin: 0 auto; padding: 20px 0 42px; }
     .back { display: inline-flex; gap: .4em; align-items: center; color: #52616b; font-size: .9rem; text-decoration: none; }
     .back:hover { text-decoration: underline; }
-    header { padding: 16px 4px 14px; }
-    .number { margin: 0 0 3px; color: var(--b); font-size: .8rem; font-weight: 800; letter-spacing: .14em; }
+    header { padding: 24px 4px 20px; }
+    .number { margin: 0 0 3px; color: var(--rabbit); font-size: .8rem; font-weight: 800; letter-spacing: .14em; }
+    .category-label { margin: 0 0 2px; color: var(--muted); font-size: .72rem; font-weight: 700; letter-spacing: .12em; }
     h1 { margin: 0; font-size: clamp(2rem, 8vw, 3.6rem); line-height: 1.15; letter-spacing: .03em; }
+    .subtitle { margin-left: .4em; color: var(--muted); font-size: .42em; font-weight: 600; white-space: nowrap; }
     .lead { margin: 10px 0 0; font-size: clamp(1rem, 3.5vw, 1.25rem); font-weight: 700; }
     .card { background: rgba(255,255,255,.9); border: 1px solid rgba(222,216,202,.85); border-radius: 24px; box-shadow: 0 12px 34px rgba(48,68,61,.08); }
-    .playground { overflow: hidden; }
-    .sky { position: relative; min-height: 210px; padding: 14px 20px 0; background: linear-gradient(#dff5ff 0 66%, #e8f2c8 66%); }
-    .cloud { position: absolute; color: rgba(255,255,255,.92); font-size: 3rem; filter: drop-shadow(0 3px 0 rgba(108,156,168,.08)); user-select: none; }
-    .cloud.one { top: 8px; left: 12%; } .cloud.two { top: 35px; right: 14%; font-size: 2rem; }
-    .status {
-      position: relative; z-index: 2; width: fit-content; min-height: 38px; margin: 0 auto;
-      padding: 5px 15px; border-radius: 999px; background: rgba(255,255,255,.86);
-      font-weight: 800; font-variant-numeric: tabular-nums; text-align: center; white-space: pre-line; box-shadow: 0 4px 15px rgba(53,87,94,.08);
+    h2 { margin: 0; font-size: 1.08rem; }
+
+    /* ---- intro ---- */
+    .intro { padding: 22px 20px; }
+    .intro .lead2 { margin: 8px 0 16px; color: var(--muted); font-size: .95rem; font-weight: 500; }
+    .mini-diagram { margin: 14px 0 4px; }
+    .mini-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+    .mini-label { width: 74px; font-size: .78rem; text-align: right; color: var(--muted); flex-shrink: 0; }
+    .mini-track { flex: 1; max-width: 340px; height: 24px; border-radius: 12px; display: flex; overflow: hidden; }
+    .mini-seg.a { background: var(--rabbit); }
+    .mini-seg.b { background: var(--turtle); }
+    .mini-seg.d { background: var(--sun); }
+    .mini-caption { font-size: .8rem; color: var(--muted); margin-top: 8px; }
+    .formula-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .formula-chip {
+      font-weight: 800; background: var(--cream); border: 1px dashed var(--line);
+      color: var(--ink); border-radius: 14px; padding: 8px 14px; font-size: .85rem;
     }
-    .track { position: absolute; left: 28px; right: 28px; bottom: 18px; height: 112px; }
-    .road { position: absolute; left: 0; right: 0; bottom: 0; height: 48px; border-radius: 25px; background: var(--road); box-shadow: inset 0 -5px 0 #d0c9ba; }
-    .road::after { content: ""; position: absolute; left: 4%; right: 4%; top: 22px; border-top: 3px dashed rgba(255,255,255,.9); }
-    .end, .rest-label { position: absolute; bottom: 46px; color: #63745d; font-size: .72rem; font-weight: 700; }
-    .end.left { left: 0; }
-    .end.right { right: 0; }
-    .rest-label { left: 50%; transform: translateX(-50%); color: #755900; }
-    .rest-mark { position: absolute; left: 50%; bottom: 2px; width: 4px; height: 48px; border-radius: 4px; background: var(--sun); transform: translateX(-50%); box-shadow: 0 0 0 4px rgba(247,201,72,.2); }
-    .walker { position: absolute; bottom: 38px; width: 54px; text-align: center; transform: translateX(-50%); will-change: left; }
-    .walker .person { display: block; font-size: 2.6rem; line-height: 1; transform: scaleX(-1); transform-origin: 50% 100%; filter: drop-shadow(0 4px 2px rgba(46,55,45,.15)); }
-    .walker .name { display: block; margin-top: 2px; font-size: .72rem; font-weight: 800; }
-    .walker .zzz { position: absolute; left: 34px; top: -16px; color: #52616b; font-size: .78rem; font-weight: 900; opacity: 0; transform: translateY(5px); }
-    .walker.moving .person { animation: bob-forward .32s ease-in-out infinite alternate; }
-    .walker.resting .person { transform: rotate(-90deg) translate(-4px, 3px); animation: breathe 1s ease-in-out infinite alternate; }
-    .walker.resting .zzz { opacity: 1; animation: zzz 1.1s ease-in-out infinite alternate; }
-    .walker.arrived .person { animation: arrive-forward .5s ease both; }
-    @keyframes bob-forward {
-      from { transform: scaleX(-1); }
-      to { transform: scaleX(-1) translateY(-6px) rotate(-3deg); }
+
+    /* ---- ribbon playground ---- */
+    .ribbon-playground { padding: 20px; }
+    .problem-box { background: #f8f6ef; border-radius: 16px; padding: 14px 16px; font-size: .95rem; margin-bottom: 16px; }
+    .problem-box b { color: var(--rabbit); }
+    .bar-row { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
+    .bar-row.combine-row { display: none; }
+    .bar-row.combine-row.visible { display: flex; }
+    .bar-label { width: 92px; flex-shrink: 0; text-align: right; font-size: .82rem; font-weight: 700; color: var(--muted); }
+    .bar-wrapper { flex: 1; max-width: 420px; display: flex; align-items: stretch; gap: 8px; }
+    .bar-track {
+      height: 42px; border-radius: 21px; display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 10px; color: #fff; font-weight: 800; font-size: .8rem; transition: width .18s ease;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,.08); white-space: nowrap;
     }
-    @keyframes breathe { to { transform: rotate(-90deg) translate(-7px, 3px) scale(1.04); } }
-    @keyframes zzz { to { transform: translateY(-3px); opacity: .75; } }
-    @keyframes arrive-forward {
-      0%, 100% { transform: scaleX(-1); }
-      35% { transform: scaleX(-1) scale(1.22) rotate(-7deg); }
-      70% { transform: scaleX(-1) scale(1.08) rotate(7deg); }
+    .bar-track.a { background: var(--rabbit); }
+    .bar-track.b { background: var(--turtle); }
+    .bar-track.equal { box-shadow: inset 0 -3px 0 rgba(0,0,0,.08), 0 0 0 3px var(--sun); }
+    .tray {
+      height: 42px; border-radius: 14px;
+      background: repeating-linear-gradient(135deg, var(--sun), var(--sun) 8px, #e0af2f 8px, #e0af2f 16px);
+      display: flex; align-items: center; justify-content: center; color: #5c4300; font-weight: 800; font-size: .76rem;
+      width: 0; opacity: 0; transition: width .25s ease, opacity .25s ease; flex-shrink: 0;
     }
-    .controls { display: grid; grid-template-columns: 1fr 1fr 1fr auto; align-items: center; gap: 10px; padding: 12px 18px; background: var(--paper); }
-    .control { min-width: 0; padding: 8px 12px; border-radius: 16px; background: #f8f6ef; }
-    .control label { display: flex; justify-content: space-between; gap: 8px; font-size: .86rem; font-weight: 750; }
-    output { font-variant-numeric: tabular-nums; white-space: nowrap; }
-    input[type="range"] { width: 100%; min-height: 30px; margin: 8px 0 0; accent-color: var(--a); cursor: pointer; }
-    .control.rest input { accent-color: var(--sun); }
-    .control.view input { accent-color: var(--b); }
-    .actions { display: flex; justify-content: center; gap: 10px; }
-    button { min-width: 118px; min-height: 48px; border: 0; border-radius: 999px; padding: 11px 22px; color: white; background: var(--ink); font: inherit; font-weight: 800; cursor: pointer; box-shadow: 0 5px 0 #111b23; }
+    .bar-track.combined { display: flex; background: transparent; box-shadow: none; padding: 0; gap: 0; transition: width .5s ease, gap .35s ease; width: 0%; }
+    .combined-half { flex: 1 1 50%; display: flex; align-items: center; justify-content: center; background: var(--turtle); color: #fff; }
+    .combined-half:first-child { border-radius: 21px 0 0 21px; }
+    .combined-half:last-child { border-radius: 0 21px 21px 0; }
+    .bar-track.combined.split { gap: 6px; }
+    .bar-track.combined.split .combined-half { border-radius: 21px; }
+    .half-text { font-weight: 800; font-size: .8rem; opacity: 0; transition: opacity .3s ease; }
+    .bar-track.combined.split .half-text { opacity: 1; }
+
+    .control { padding: 12px 13px; border-radius: 16px; background: #f8f6ef; margin-top: 18px; }
+    .age-readout { background: #f8f6ef; border-radius: 16px; padding: 12px 16px; margin-top: 12px; }
+    .age-years { font-weight: 800; margin: 0 0 4px; }
+    .age-ratio { font-weight: 900; font-size: 1.1rem; color: var(--muted); margin: 0; transition: color .2s ease; }
+    .age-ratio.hit { color: var(--turtle); }
+
+    /* ---- 相当算（目盛りで けずっていく線分図） ---- */
+    .unit-track { display: flex; height: 46px; border-radius: 23px; overflow: hidden; box-shadow: inset 0 -3px 0 rgba(0,0,0,.08); margin: 16px 0 8px; background: #f1ecf9; }
+    .unit-track.fixed-width { width: fit-content; }
+    .unit-track.mini { height: 40px; margin-bottom: 8px; }
+    .unit-cell { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .78rem; color: #fff; border-right: 2px solid #fff; transition: background .15s ease; }
+    .unit-cell:last-child { border-right: none; }
+    .unit-cell.removed1 { background: #b9a7de; }
+    .unit-cell.removed2 { background: var(--sun); color: #5c4300; }
+    .unit-cell.remain { background: var(--turtle); }
+    .frac-caption { font-size: .88rem; font-weight: 700; color: var(--ink); margin: 0 0 4px; }
+    .ribbon2-wrap { margin: 4px 0 12px; }
+    .ribbon2-label { font-size: .8rem; color: var(--muted); font-weight: 700; margin: 0 0 6px; }
+    .ribbon2-align { display: flex; justify-content: flex-end; }
+    .frac-playground { padding: 20px; }
+    .control label { display: flex; align-items: center; gap: 8px; font-size: .85rem; font-weight: 750; color: var(--ink); }
+    input[type="range"] { width: 100%; margin: 11px 0 2px; accent-color: var(--rabbit); cursor: pointer; }
+
+    .stage-card { background: #f8f6ef; border-radius: 14px; padding: 12px 16px; margin-top: 16px; font-size: .9rem; }
+    .stage-card strong { display: block; font-size: 1rem; margin: 2px 0 4px; }
+    .stage-card.discover { background: var(--cream); border: 1px dashed #e0af2f; }
+    .step-chip {
+      font-size: .68rem; background: var(--ink); color: #fff; padding: 3px 10px;
+      border-radius: 999px; letter-spacing: .03em; font-weight: 700;
+    }
+    .eq-line { font-weight: 800; font-size: 1.02rem; color: var(--rabbit); display: inline-block; margin-top: 6px; }
+
+    .actions { display: flex; justify-content: center; gap: 10px; padding: 16px 0 0; flex-wrap: wrap; }
+    button { border: 0; border-radius: 999px; padding: 11px 24px; color: white; background: var(--ink); font: inherit; font-weight: 800; cursor: pointer; box-shadow: 0 5px 0 #111b23; }
     button:active { transform: translateY(3px); box-shadow: 0 2px 0 #111b23; }
     button.secondary { color: var(--ink); background: #ece8de; box-shadow: 0 5px 0 #d1cabc; }
-    .diagram { padding: 10px 18px 8px; border-top: 1px solid var(--line); background: var(--paper); }
-    .diagram h2 { margin: 0 0 4px; font-size: .92rem; }
-    svg { display: block; width: 100%; max-width: 100%; height: 250px; border-radius: 14px; background: #fffefa; }
-    .legend { display: flex; justify-content: center; gap: 20px; margin-top: 2px; color: var(--muted); font-size: .76rem; }
-    .dot { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border-radius: 50%; }
-    .results { margin-top: 18px; padding: 20px; }
-    .numbers { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
-    .number-card { min-width: 0; padding: 11px 7px; border-radius: 14px; background: #f8f6ef; text-align: center; }
-    .number-card span { display: block; color: var(--muted); font-size: .72rem; }
-    .number-card strong { display: block; margin-top: 2px; font-size: clamp(.98rem, 3vw, 1.22rem); font-variant-numeric: tabular-nums; }
-    .number-card.rest { background: var(--cream); }
-    .thought { margin: 14px 0 0; color: var(--muted); text-align: center; font-weight: 700; }
-    .challenge { margin-top: 18px; padding: 22px; }
-    .challenge h2 { margin: 0 0 10px; font-size: clamp(1.25rem, 4vw, 1.7rem); line-height: 1.3; }
-    .challenge p { margin: 7px 0; font-weight: 700; }
-    .challenge .hint { color: var(--muted); }
-    .answer-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
-    .answer-row label { font-weight: 800; }
-    .answer-row input {
-      width: min(180px, 100%); min-height: 48px; padding: 10px 14px;
-      border: 2px solid var(--line); border-radius: 14px; background: #fffefa;
-      color: var(--ink); font: inherit; font-size: 1.15rem; font-weight: 800;
-    }
-    .answer-row .unit { font-weight: 800; }
-    .answer-row button { min-width: 142px; }
-    .challenge-result { display: none; margin-top: 16px; padding: 16px; border-radius: 16px; background: #f8f6ef; text-align: center; font-weight: 800; }
-    .challenge-result.show { display: block; }
-    .challenge-result.correct { background: var(--cream); }
-    .challenge-result p { margin: 6px 0; }
-    .panda-prize { margin: 8px 0; font-size: 2.6rem; line-height: 1; }
-    .challenge-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
-    .challenge-links a {
-      display: inline-block; padding: 10px 16px; border: 1px solid var(--line);
-      border-radius: 999px; color: var(--ink); text-decoration: none; background: white; font-weight: 800;
-    }
-    .challenge-links a:hover { background: #fffdf8; }
-    .feedback { margin-top: 18px; padding: 22px; text-align: center; }
+    button:disabled { opacity: .4; cursor: default; }
+
+    /* ---- challenge / reward (reuses the workshop's existing pattern) ---- */
+    .challenge { margin-top: 18px; padding: 24px; text-align: center; }
+    .challenge h2 { margin: 0 0 12px; color: var(--rabbit); font-size: clamp(1.35rem, 5vw, 1.9rem); }
+    .challenge p { margin: 8px 0; font-weight: 700; }
+    .challenge .hint { color: var(--muted); font-weight: 500; }
+    .answer-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+    .answer-row .field { display: flex; flex-direction: column; gap: 4px; }
+    .answer-row .field span { font-size: .78rem; color: var(--muted); font-weight: 700; }
+    .answer-row input { width: min(150px, 100%); min-height: 48px; border: 2px solid var(--line); border-radius: 999px; padding: 8px 16px; color: var(--ink); background: white; font: inherit; font-weight: 800; text-align: center; }
+    .answer-row input:focus { outline: 3px solid rgba(237,106,90,.22); border-color: var(--rabbit); }
+    .challenge-message { min-height: 1.6em; margin-top: 14px; color: var(--rabbit); font-weight: 800; }
+    .reward { display: none; margin-top: 18px; padding: 18px; border-radius: 18px; background: var(--cream); }
+    .reward.show { display: block; }
+    .reward .sparkles { margin: 2px 0; font-size: 1.4rem; letter-spacing: .2em; }
+    .reward .animal { display: block; width: 80px; height: auto; margin: 4px auto; }
+    .reward-links { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .reward-links a { display: inline-block; padding: 10px 18px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: white; font-weight: 800; }
+    .reward-links a:hover { background: #fffdf8; }
+
+    .feedback { margin-top: 28px; padding: 25px; text-align: center; }
     .feedback p { margin: 0 0 10px; font-weight: 700; }
-    .feedback a { display: inline-block; padding: 10px 20px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: white; font-weight: 800; }
+    .feedback a { display: inline-block; padding: 8px 18px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; background: white; }
     .feedback a:hover { background: var(--cream); }
-    @media (max-width: 860px) {
-      .controls { grid-template-columns: 1fr 1fr; }
-      .actions { grid-column: 1 / -1; padding: 3px 0 5px; }
-      .numbers { grid-template-columns: repeat(2, 1fr); }
-    }
+
+    /* ---- さんすけ (floating mascot) ---- */
+    .mascot-dock { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; align-items: flex-end; gap: 10px; max-width: min(300px, 78vw); }
+    .speech { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; font-size: .8rem; font-weight: 700; box-shadow: 0 8px 20px rgba(48,68,61,.12); position: relative; max-width: 220px; white-space: pre-line; }
+    .speech::after { content: ""; position: absolute; right: -8px; bottom: 14px; border: 8px solid transparent; border-left-color: #fff; }
+    .mascot { width: 58px; height: 58px; flex-shrink: 0; filter: drop-shadow(0 6px 8px rgba(48,68,61,.25)); }
+    .mascot.bounce { animation: bounce .5s ease; }
+    @keyframes bounce { 0%,100%{ transform: translateY(0);} 40%{ transform: translateY(-9px);} 70%{ transform: translateY(2px);} }
+
     @media (max-width: 650px) {
       .page { width: min(100% - 18px, 920px); padding-top: 12px; }
-      header { padding: 14px 4px 16px; }
-      .sky { min-height: 220px; padding-inline: 8px; }
-      .track { left: 20px; right: 20px; }
-      .walker { width: 44px; } .walker .person { font-size: 2.25rem; }
-      .walker .zzz { left: 28px; top: -13px; }
-      .controls { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
-      .control { padding: 9px 12px; }
-      .diagram { padding: 12px 8px 10px; }
-      .diagram h2 { padding: 0 6px; }
-      svg { height: auto; }
-      .numbers { grid-template-columns: 1fr; }
-      .challenge { padding: 18px; }
-      .answer-row { display: grid; grid-template-columns: 1fr auto; }
-      .answer-row label, .answer-row button { grid-column: 1 / -1; }
-      .answer-row input { width: 100%; }
+      header { padding-top: 17px; }
+      .subtitle { display: block; margin: 6px 0 0; font-size: .38em; }
+      .bar-label { width: 68px; font-size: .72rem; }
+      .mini-label { width: 58px; font-size: .68rem; }
+      .answer-row { display: grid; grid-template-columns: 1fr; }
+      .mascot-dock { right: 10px; bottom: 10px; }
+      .mascot { width: 48px; height: 48px; }
     }
-    @media (prefers-reduced-motion: reduce) {
-      .walker.moving .person, .walker.resting .person, .walker.resting .zzz { animation: none; }
-    }
+    @media (prefers-reduced-motion: reduce) { * { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
   </style>
 </head>
 <body>
   <main class="page">
+    <!-- ============ 共通部分：もどるリンク ============ -->
     <a class="back" href="../../index.html">← 工房のトップへ</a>
+
+    <!-- ============ 単元部分：ここから下は単元ごとに書き換える ============ -->
     <header>
-      <p class="number">INTELLECTUAL TOY #004</p>
-      <h1>止まれ！</h1>
-      <p class="lead">途中で休憩したら、グラフはどうなる？</p>
+      <p class="category-label">01 線分図・面積図</p>
+      <p class="number">#004 相当算</p>
+      <h1>けずって みつけよう</h1>
+      <p class="lead">全体から割合ぶんずつ へらしていくと、最後に残った数がわかるよ。もとの数をあてよう！</p>
     </header>
 
-    <section class="card playground" aria-label="途中で休憩して歩くアニメーション">
-      <div class="sky">
-        <span class="cloud one" aria-hidden="true">☁</span><span class="cloud two" aria-hidden="true">☁</span>
-        <div class="status" id="status" aria-live="polite">全部で100mの道を歩くよ
-まず50mまで歩こう</div>
-        <div class="track">
-          <span class="end left">スタート</span><span class="end right">100m</span><span class="rest-label">休憩</span>
-          <div class="road"></div><div class="rest-mark" aria-hidden="true"></div>
-          <div class="walker" id="walker"><span class="zzz">Zzz</span><span class="person">🐕</span><span class="name">犬</span></div>
+    <section class="card intro">
+      <h2>相当算ってなに？</h2>
+      <p class="lead2">全体の量から、割合（分数）ぶんずつ 引いていく問題だよ。分数のままだと わかりにくいから、線分図に「目盛り（メモリ）」を打って、全体を同じ大きさの ますに分けてみよう。1目盛り分が「1個ぶん」になるから、あとは目盛りを数えるだけで解けるよ。</p>
+      <div class="mini-diagram">
+        <div class="unit-track mini">
+          <div class="unit-cell removed1">1</div>
+          <div class="unit-cell removed1">2</div>
+          <div class="unit-cell removed2">3</div>
+          <div class="unit-cell remain">4</div>
+          <div class="unit-cell remain">5</div>
+          <div class="unit-cell remain">6</div>
         </div>
+        <p class="mini-caption">全体を6目盛りに分けると、1日目に2目盛り、2日目に1目盛りぶん減って、のこりは3目盛り。1目盛り分の数がわかれば、全体もわかるよ。</p>
       </div>
-      <div class="controls">
-        <div class="control">
-          <label for="speed">速さ <output id="speedOut">10 m/秒</output></label>
-          <input id="speed" type="range" min="2" max="20" step="1" value="10">
-        </div>
-        <div class="control rest">
-          <label for="restTime">休憩時間 <output id="restOut">3 秒</output></label>
-          <input id="restTime" type="range" min="0" max="10" step="0.5" value="3">
-        </div>
-        <div class="control view">
-          <label for="viewSpeed">見る速さ <output id="viewOut">1.0 倍</output></label>
-          <input id="viewSpeed" type="range" min="0.5" max="2" step="0.5" value="1">
-        </div>
-        <div class="actions">
-          <button id="play" type="button">▶ 再生</button>
-          <button id="reset" class="secondary" type="button">リセット</button>
-        </div>
-      </div>
-      <section class="diagram" aria-labelledby="graph-title">
-        <h2 id="graph-title">グラフで見ると、止まっている間は水平になる。</h2>
-        <svg id="graph" viewBox="0 0 720 278" role="img" aria-label="犬が50m地点で休憩すると距離のグラフが水平になる様子"></svg>
-        <div class="legend"><span><i class="dot" style="background:var(--a)"></i>犬</span><span><i class="dot" style="background:var(--sun)"></i>休憩</span></div>
-      </section>
     </section>
 
-    <section class="card results" aria-label="休憩の様子">
-      <div class="numbers">
-        <div class="number-card"><span>道の長さ</span><strong>100m</strong></div>
-        <div class="number-card"><span>休憩地点</span><strong>50m</strong></div>
-        <div class="number-card"><span>速さ</span><strong id="speedResult">10m/秒</strong></div>
-        <div class="number-card rest"><span>止まっている時間</span><strong id="restResult">3秒</strong></div>
-        <div class="number-card"><span>ゴールまで</span><strong id="goalTime">13秒</strong></div>
-        <div class="number-card"><span>いまの距離</span><strong id="currentDistance">0m</strong></div>
+    <section class="card frac-playground" aria-label="相当算の線分図実験室">
+      <div class="problem-box">
+        ある本を、1日目に 全体の <b>1/3</b> を読み、<br>
+        2日目に 残りの <b>1/4</b> を読んだところ、<b>48ページ</b> 残りました。<br>
+        この本は全部で何ページですか？
       </div>
-      <p class="thought" id="thought">止まっている間、グラフは横になる。また同じ速さで進むと、同じ傾きの線になる。</p>
+
+      <div class="unit-track fixed-width" id="ex-track"></div>
+      <div class="ribbon2-wrap" id="ex-ribbon2-wrap" style="display:none;">
+        <p class="ribbon2-label">のこりを、新しいリボンとして取り出すと…</p>
+        <div class="ribbon2-align" id="ex-ribbon2-align">
+          <div class="unit-track ribbon2 fixed-width" id="ex-ribbon2"></div>
+        </div>
+      </div>
+      <p class="frac-caption">のこり：<b id="ex-remain-label">？目盛り分</b>　＝　<b id="ex-remain-amount">?</b>ページ</p>
+
+      <div class="control">
+        <label for="ex-slider1"><span class="step-chip">STEP1</span> 👉 1日目に読んだ分（1目盛り）をへらそう</label>
+        <input type="range" id="ex-slider1" min="0" max="1" value="0" step="1">
+      </div>
+      <div class="control">
+        <label for="ex-slider2"><span class="step-chip">STEP2</span> 👉 2日目に読んだ分（1目盛り）をへらそう</label>
+        <input type="range" id="ex-slider2" min="0" max="1" value="0" step="1" disabled>
+      </div>
+
+      <div id="ex-narrative"></div>
+
+      <div class="actions">
+        <button type="button" id="ex-next-btn" disabled>つぎへ ▶</button>
+        <button type="button" class="secondary" id="ex-reset-btn">もう一度</button>
+      </div>
+
+      <div class="reward" id="ex-answer">
+        <p>こたえ：全部で <b>96ページ</b></p>
+      </div>
     </section>
 
     <section class="card challenge" aria-labelledby="challenge-title">
       <h2 id="challenge-title">🎁 チャレンジしてみよう！</h2>
-      <p>犬の速さは 20 m/秒。</p>
-      <p>50m地点で7秒休憩します。</p>
-      <p>ゴールまで何秒かかるでしょう？</p>
+      <p>せいかいすると、コレクションがふえるよ！</p>
+      <p>あるジュースを、1日目に 全体の <b>1/4</b> を飲み、<br>2日目に 残りの <b>1/3</b> を飲んだところ、<b>30dL</b> 残りました。</p>
+      <p>ジュースは全部で何dLありましたか？</p>
       <p class="hint">まずは考えてみよう。</p>
-      <p class="hint">わからなければスライダーを動かして確かめよう！</p>
+      <div class="actions" style="margin-bottom:4px;">
+        <button type="button" class="secondary" id="ch-hint-toggle">💡 専用の線分図で たしかめる</button>
+      </div>
+
+      <div id="ch-frac-wrap" style="display:none; text-align:left; margin-top:14px;">
+        <div class="unit-track" id="ch-track"></div>
+        <p class="frac-caption">のこり：<b id="ch-remain-label">？目盛り分</b>　＝　<b id="ch-remain-amount">?</b>dL</p>
+        <div class="control">
+          <label for="ch-slider1"><span class="step-chip">STEP1</span> 👉 1日目に飲んだ分（1目盛り）をへらそう</label>
+          <input type="range" id="ch-slider1" min="0" max="1" value="0" step="1">
+        </div>
+        <div class="control">
+          <label for="ch-slider2"><span class="step-chip">STEP2</span> 👉 2日目に飲んだ分（1目盛り）をへらそう</label>
+          <input type="range" id="ch-slider2" min="0" max="1" value="0" step="1" disabled>
+        </div>
+        <div id="ch-narrative"></div>
+        <div class="actions">
+          <button type="button" id="ch-next-btn" disabled>つぎへ ▶</button>
+          <button type="button" class="secondary" id="ch-reset-btn">もう一度</button>
+        </div>
+      </div>
+
       <div class="answer-row">
-        <label for="challengeAnswer">答え</label>
-        <input id="challengeAnswer" type="text" inputmode="numeric" autocomplete="off" aria-describedby="challengeUnit challengeResult">
-        <span class="unit" id="challengeUnit">秒</span>
+        <div class="field">
+          <span>全部で何dL</span>
+          <input id="challengeAnswerA" type="text" inputmode="numeric" autocomplete="off" aria-label="全部で何dL">
+        </div>
         <button id="checkChallenge" type="button">こたえをみる</button>
       </div>
-      <div class="challenge-result" id="challengeResult" aria-live="polite"></div>
+      <p class="challenge-message" id="challengeMessage" aria-live="polite"></p>
+      <div class="reward" id="challengeReward" aria-live="polite">
+        <p>🎉 正解！</p>
+        <p class="sparkles">✨✨✨</p>
+        <img id="result-animal" class="animal" src="../../assets/004.png" alt="">
+        <p>新しいコレクションが増えた！</p>
+        <div class="reward-links">
+          <a href="../../animal-book/index.html">📖 コレクション図鑑を見る</a>
+          <a href="../005-baisuuzan/index.html">➡ 次の知的玩具へ</a>
+        </div>
+      </div>
     </section>
+    <!-- ============ 単元部分ここまで ============ -->
 
-    <section class="card feedback" aria-label="感想フォーム">
+    <!-- ============ 共通部分：感想フォーム ============ -->
+    <section class="card feedback">
       <p>遊んでみてどうでしたか？</p>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdDMNP37vNe0P2DGJ-g8AG2vuAKJLnY-Kpj2Z2N6Pct18heug/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">遊んでみた感想を送る</a>
+     <a href="https://docs.google.com/forms/d/e/1FAIpQLSdDMNP37vNe0P2DGJ-g8AG2vuAKJLnY-Kpj2Z2N6Pct18heug/viewform">
+感想を送る
+</a>
     </section>
   </main>
+
+  <!-- ============ 共通部分：さんすけマスコット ============ -->
+  <div class="mascot-dock">
+    <div class="speech" id="speech">スライダーを うごかして、わりあいの分だけ けずってみよう！</div>
+    <div class="mascot" id="mascot"></div>
+  </div>
+  <!-- ============ 共通部分ここまで ============ -->
 
   <script>
     (() => {
       const $ = (s) => document.querySelector(s);
+
+      /* ============================================================
+         共通部分：さんすけマスコットの制御ロジック
+         ============================================================ */
+      /* ---------------- さんすけ (mascot SVG states) ---------------- */
+      function mascotSVG(state){
+        const ears = `<ellipse cx="27" cy="24" rx="12" ry="12" fill="#C79A6B"/><ellipse cx="73" cy="24" rx="12" ry="12" fill="#C79A6B"/>
+                      <ellipse cx="27" cy="24" rx="6" ry="6" fill="#F2D3B3"/><ellipse cx="73" cy="24" rx="6" ry="6" fill="#F2D3B3"/>`;
+        const head = `<circle cx="50" cy="55" r="38" fill="#E8B98A"/>`;
+        const cheeks = `<ellipse cx="28" cy="65" rx="7" ry="5" fill="#FFAFC0" opacity="0.75"/><ellipse cx="72" cy="65" rx="7" ry="5" fill="#FFAFC0" opacity="0.75"/>`;
+        const muzzle = `<ellipse cx="50" cy="66" rx="15" ry="11" fill="#F7DFC2"/>`;
+        let eyes, mouth, extra = "";
+        if(state === "happy"){
+          eyes = `<path d="M32 47 q6 -8 12 0" stroke="#25313c" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+                  <path d="M56 47 q6 -8 12 0" stroke="#25313c" stroke-width="3.4" fill="none" stroke-linecap="round"/>`;
+          mouth = `<path d="M40 66 q10 12 20 0" stroke="#25313c" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+          extra = `<text x="14" y="20" font-size="14">✨</text><text x="78" y="24" font-size="12">✨</text>`;
+        } else if(state === "thinking"){
+          eyes = `<circle cx="37" cy="50" r="4" fill="#25313c"/><circle cx="63" cy="47" r="4" fill="#25313c"/>`;
+          mouth = `<path d="M43 68 q7 3 14 0" stroke="#25313c" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+          extra = `<circle cx="80" cy="18" r="2.4" fill="#65727d"/><circle cx="87" cy="12" r="3.2" fill="#65727d"/>`;
+        } else if(state === "surprised"){
+          eyes = `<circle cx="37" cy="49" r="6" fill="#25313c"/><circle cx="63" cy="49" r="6" fill="#25313c"/>
+                  <circle cx="35" cy="47" r="1.6" fill="#fff"/><circle cx="61" cy="47" r="1.6" fill="#fff"/>`;
+          mouth = `<ellipse cx="50" cy="70" rx="6" ry="8" fill="#25313c"/>`;
+          extra = `<text x="78" y="22" font-size="20" font-weight="900" fill="#ed6a5a">！</text>`;
+        } else {
+          eyes = `<circle cx="37" cy="50" r="4.6" fill="#25313c"/><circle cx="63" cy="50" r="4.6" fill="#25313c"/>
+                  <circle cx="38.6" cy="48.4" r="1.4" fill="#fff"/><circle cx="64.6" cy="48.4" r="1.4" fill="#fff"/>`;
+          mouth = `<path d="M42 67 q8 6 16 0" stroke="#25313c" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+        }
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%">${ears}${head}${cheeks}${muzzle}${eyes}${mouth}${extra}</svg>`;
+      }
+      const mascotEl = $('#mascot'), speechEl = $('#speech');
+      function setMascot(state, text){
+        mascotEl.innerHTML = mascotSVG(state);
+        if(text){ speechEl.textContent = text; }
+        mascotEl.classList.remove('bounce'); void mascotEl.offsetWidth; mascotEl.classList.add('bounce');
+      }
+      setMascot('normal');
+
+      /* ---------------- 線分図リボン・ウィジェット（再利用できる形にまとめたもの） ---------------- */
+      function gcd(a, b){ return b === 0 ? a : gcd(b, a % b); }
+      function fracText(num, den){
+        const g = gcd(num, den) || 1;
+        return `${num/g}/${den/g}`;
+      }
+
+      function createFractionWidget(cfg){
+        const { frac1, frac2, finalAmount, unit, itemName, ids, onSolved, onReset, twoPhaseGrid } = cfg;
+        const a = frac1.num, b = frac1.den, c = frac2.num, d = frac2.den;
+        let day1U = a * d, day2U = c * (b - a), remainU = (b - a) * (d - c), N = b * d;
+        const g = [day1U, day2U, remainU, N].reduce((x,y)=>gcd(x,y));
+        day1U /= g; day2U /= g; remainU /= g; N /= g;
+        const unitValue = finalAmount / remainU;
+        const total = unitValue * N;
+
+        const slider1 = $(ids.slider1), slider2 = $(ids.slider2), track = $(ids.track);
+        const remainLabel = $(ids.remainLabel), remainAmount = $(ids.remainAmount);
+        const nextBtn = $(ids.nextBtn), resetBtn = $(ids.resetBtn), narrative = $(ids.narrative);
+        const ribbon2Wrap = ids.ribbon2Wrap ? $(ids.ribbon2Wrap) : null;
+        const ribbon2Track = ids.ribbon2Track ? $(ids.ribbon2Track) : null;
+        const ribbon2Align = ids.ribbon2Align ? $(ids.ribbon2Align) : null;
+        let stage = 0;
+        let phase = twoPhaseGrid ? 1 : 2;
+        let cells = [], fineCells = [], ribbon2Cells = [];
+        const pxPerUnit = 60;
+
+        function buildGrid(count, prefilledRemoved){
+          track.innerHTML = '';
+          cells = [];
+          for(let i = 0; i < count; i++){
+            const cell = document.createElement('div');
+            cell.className = 'unit-cell remain';
+            cell.textContent = i + 1;
+            track.appendChild(cell);
+            cells.push(cell);
+          }
+          for(let i = 0; i < (prefilledRemoved||0); i++){ cells[i].className = 'unit-cell removed1'; }
+        }
+        function buildRibbon1Phase1(){
+          track.innerHTML = '';
+          cells = [];
+          const wideWidth = (N / b) * pxPerUnit;
+          for(let i = 0; i < b; i++){
+            const cell = document.createElement('div');
+            cell.className = 'unit-cell remain';
+            cell.style.flex = 'none';
+            cell.style.width = wideWidth + 'px';
+            cell.textContent = i + 1;
+            track.appendChild(cell);
+            cells.push(cell);
+          }
+        }
+        function buildRibbon1Phase2(){
+          track.innerHTML = '';
+          cells = []; fineCells = [];
+          const wideWidth = (N / b) * pxPerUnit;
+          for(let i = 0; i < a; i++){
+            const cell = document.createElement('div');
+            cell.className = 'unit-cell removed1';
+            cell.style.flex = 'none';
+            cell.style.width = wideWidth + 'px';
+            track.appendChild(cell);
+            cells.push(cell);
+          }
+          for(let i = 0; i < d; i++){
+            const cell = document.createElement('div');
+            cell.className = 'unit-cell remain';
+            cell.style.flex = 'none';
+            cell.style.width = pxPerUnit + 'px';
+            track.appendChild(cell);
+            fineCells.push(cell);
+          }
+        }
+        function buildRibbon2(){
+          ribbon2Track.innerHTML = '';
+          ribbon2Cells = [];
+          for(let i = 0; i < d; i++){
+            const cell = document.createElement('div');
+            cell.className = 'unit-cell remain';
+            cell.style.flex = 'none';
+            cell.style.width = pxPerUnit + 'px';
+            cell.textContent = i + 1;
+            ribbon2Track.appendChild(cell);
+            ribbon2Cells.push(cell);
+          }
+        }
+
+        slider2.min = 0; slider2.max = day2U; slider2.step = 1;
+        if(twoPhaseGrid){
+          slider1.min = 0; slider1.max = a; slider1.step = 1;
+          buildRibbon1Phase1();
+        } else {
+          slider1.min = 0; slider1.max = day1U; slider1.step = 1;
+          buildGrid(N, 0);
+        }
+
+        const stageDefs = {
+          1: { badge:'STEP3', title:'のこりは何目盛り分？',
+               body:`全体を ${N}目盛りに分けると、1日目に ${day1U}目盛り、2日目に ${day2U}目盛りぶん 減ったから、<br>のこりは <b>${remainU}目盛り分</b> だとわかるよ。`,
+               btnLabel:'発見してみる ▶' },
+          2: { badge:'発見', title:'あれ？', stageClass:'discover',
+               body:`${finalAmount} ÷ ${remainU} に なってる！<br><span class="eq-line">${finalAmount} ÷ ${remainU} = ${unitValue}</span>`,
+               btnLabel:'公式を見る ▶', onEnter: ()=>{ setMascot('surprised','あれ？よく見ると…！'); } },
+          3: { badge:'公式', title:'これが相当算の公式です！', final:true,
+               body:`1目盛り分 ＝ のこり ÷ のこりの目盛り数 ＝ ${finalAmount} ÷ ${remainU} ＝ <b>${unitValue}${unit}</b><br>全体 ＝ 1目盛り分 × ${N} ＝ ${unitValue} × ${N} ＝ <b>${total}${unit}</b>`,
+               btnLabel:'かんりょう！🎉',
+               onEnter: ()=>{
+                 setMascot('happy', `せいかい！${itemName}は全部で${total}${unit}だよ。`);
+                 if(onSolved) onSolved(total);
+               } }
+        };
+
+        function renderStage(n){
+          const def = stageDefs[n];
+          if(def.onEnter) def.onEnter();
+          narrative.innerHTML = `<div class="stage-card${def.stageClass? (' '+def.stageClass):''}"><span class="step-chip">${def.badge}</span> <strong>${def.title}</strong><p>${def.body}</p></div>`;
+          nextBtn.textContent = def.btnLabel;
+          nextBtn.disabled = !!def.final;
+        }
+        function resetFlow(){
+          stage = 0;
+          narrative.innerHTML = '';
+          nextBtn.disabled = true;
+          nextBtn.textContent = 'つぎへ ▶';
+          if(onReset) onReset();
+        }
+        function updatePhase1(){
+          const s1 = Math.min(Number(slider1.value), a);
+          cells.forEach((cell, i) => { cell.className = i < s1 ? 'unit-cell removed1' : 'unit-cell remain'; });
+          remainLabel.textContent = '？目盛り分';
+          remainAmount.textContent = '?';
+          if(s1 >= a){
+            phase = 2;
+            slider1.disabled = true;
+            buildRibbon1Phase2();
+            if(ribbon2Wrap){ ribbon2Wrap.style.display = 'block'; if(ribbon2Align){ ribbon2Align.style.width = (N * pxPerUnit) + 'px'; } buildRibbon2(); }
+            narrative.innerHTML = `<div class="stage-card"><span class="step-chip">STEP2</span> <strong>のこりを新しいリボンにして、4等分してみよう</strong><p>のこり（2/3）を、下に新しいリボンとして取り出して 4等分したよ。1本目の のこり部分にも 同じ目盛りを入れると、1つぶんは ちょうど 1本目の <b>1/6</b> と 同じ大きさだったとわかるね。</p></div>`;
+            slider2.disabled = false;
+            setMascot('happy','1日目の分がへらせたね！のこりを新しいリボンにして、4等分してみたよ。');
+          } else {
+            setMascot('normal');
+          }
+        }
+        function updatePhase2(){
+          const s2 = Math.min(Number(slider2.value), day2U);
+          fineCells.forEach((cell, i) => { cell.className = i < s2 ? 'unit-cell removed2' : 'unit-cell remain'; });
+          if(ribbon2Cells.length){ ribbon2Cells.forEach((cell, i) => { cell.className = i < s2 ? 'unit-cell removed2' : 'unit-cell remain'; }); }
+          const bothComplete = s2 >= day2U;
+          if(bothComplete){
+            remainLabel.textContent = `${remainU}目盛り分`;
+            remainAmount.textContent = finalAmount;
+            if(stage === 0){ stage = 1; renderStage(1); setMascot('happy','やったね！のこりがぴったり出たね。「つぎへ」を押してみよう。'); }
+          } else {
+            remainLabel.textContent = '？目盛り分';
+            remainAmount.textContent = '?';
+            if(stage !== 0){ resetFlow(); }
+            setMascot('thinking');
+          }
+        }
+        function updateSinglePhase(){
+          const s1 = Math.min(Number(slider1.value), day1U);
+          const step1Complete = s1 >= day1U;
+          slider2.disabled = !step1Complete;
+          if(!step1Complete && Number(slider2.value) > 0){ slider2.value = 0; }
+          const s2 = step1Complete ? Math.min(Number(slider2.value), day2U) : 0;
+
+          cells.forEach((cell, i) => {
+            if(i < s1){ cell.className = 'unit-cell removed1'; }
+            else if(step1Complete && i < day1U + s2){ cell.className = 'unit-cell removed2'; }
+            else { cell.className = 'unit-cell remain'; }
+          });
+
+          const bothComplete = step1Complete && s2 >= day2U;
+          if(bothComplete){
+            remainLabel.textContent = `${remainU}目盛り分`;
+            remainAmount.textContent = finalAmount;
+            if(stage === 0){ stage = 1; renderStage(1); setMascot('happy','やったね！のこりがぴったり出たね。「つぎへ」を押してみよう。'); }
+          } else {
+            remainLabel.textContent = '？目盛り分';
+            remainAmount.textContent = '?';
+            if(stage !== 0){ resetFlow(); }
+            setMascot(step1Complete ? 'thinking' : 'normal');
+          }
+        }
+
+        slider1.addEventListener('input', ()=>{
+          if(twoPhaseGrid){ if(phase === 1) updatePhase1(); }
+          else { updateSinglePhase(); }
+        });
+        slider2.addEventListener('input', ()=>{
+          if(twoPhaseGrid){ if(phase === 2) updatePhase2(); }
+          else { updateSinglePhase(); }
+        });
+        nextBtn.addEventListener('click', ()=>{
+          const next = stage + 1;
+          if(stageDefs[next]){ stage = next; renderStage(next); }
+        });
+        resetBtn.addEventListener('click', ()=>{
+          slider1.value = 0; slider2.value = 0;
+          resetFlow();
+          if(twoPhaseGrid){
+            phase = 1;
+            slider1.disabled = false;
+            slider2.disabled = true;
+            buildRibbon1Phase1();
+            if(ribbon2Wrap){ ribbon2Wrap.style.display = 'none'; }
+            remainLabel.textContent = '？目盛り分';
+            remainAmount.textContent = '?';
+          } else {
+            updateSinglePhase();
+          }
+          setMascot('normal','もう一度、スライダーを動かしてみよう！');
+        });
+        if(twoPhaseGrid){
+          slider2.disabled = true;
+          remainLabel.textContent = '？目盛り分';
+          remainAmount.textContent = '?';
+        } else {
+          updateSinglePhase();
+        }
+      }
+      /* ============================================================
+         共通部分ここまで（createFractionWidget は使い回せる部品）
+         ============================================================ */
+
+      /* ============================================================
+         単元部分：ここから下は単元ごとの数字・登場人物・正解に書き換える
+         ============================================================ */
+      /* 例題：本を1日目に1/3、2日目に残りの1/4読んで48ページ残った（全部で96ページ） */
+      const exAnswer = $('#ex-answer');
+      createFractionWidget({
+        frac1: {num:1, den:3}, frac2: {num:1, den:4}, finalAmount: 48, unit: 'ページ', itemName: '本', twoPhaseGrid: true,
+        ids: { slider1:'#ex-slider1', slider2:'#ex-slider2', track:'#ex-track',
+               ribbon2Wrap:'#ex-ribbon2-wrap', ribbon2Track:'#ex-ribbon2', ribbon2Align:'#ex-ribbon2-align',
+               remainLabel:'#ex-remain-label', remainAmount:'#ex-remain-amount',
+               nextBtn:'#ex-next-btn', resetBtn:'#ex-reset-btn', narrative:'#ex-narrative' },
+        onSolved: ()=>{ exAnswer.classList.add('show'); },
+        onReset: ()=>{ exAnswer.classList.remove('show'); }
+      });
+
+      /* チャレンジ用の専用の線分図：ジュースを1日目に1/4、2日目に残りの1/3飲んで30dL残った（全部で60dL） */
+      $('#ch-hint-toggle').addEventListener('click', () => {
+        const wrap = $('#ch-frac-wrap');
+        const willShow = wrap.style.display === 'none';
+        wrap.style.display = willShow ? 'block' : 'none';
+        $('#ch-hint-toggle').textContent = willShow ? '💡 線分図を かくす' : '💡 専用の線分図で たしかめる';
+      });
+      createFractionWidget({
+        frac1: {num:1, den:4}, frac2: {num:1, den:3}, finalAmount: 30, unit: 'dL', itemName: 'ジュース',
+        ids: { slider1:'#ch-slider1', slider2:'#ch-slider2', track:'#ch-track',
+               remainLabel:'#ch-remain-label', remainAmount:'#ch-remain-amount',
+               nextBtn:'#ch-next-btn', resetBtn:'#ch-reset-btn', narrative:'#ch-narrative' }
+      });
+
+      /* ---------------- チャレンジ（工房の既存の仕組みをそのまま利用） ---------------- */
       const animals = {
-        '001': 'うさぎ',
-        '002': 'きつね',
-        '003': 'ハムスター',
-        '004': 'いぬ',
-        '005': 'ねずみ'
+        '001': 'うさぎ', '002': 'きつね', '003': 'ハムスター', '004': 'いぬ', '005': 'ねずみ'
       };
       const animalId = '004';
-      const speed = $('#speed'), restTime = $('#restTime'), viewSpeed = $('#viewSpeed');
-      const walker = $('#walker'), graph = $('#graph');
-      let raf = 0, running = false, startedAt = 0, pausedAt = 0;
-      const totalDistance = 100, restDistance = 50;
+      const PR_CORRECT_A = 60;
 
-      const tidy = (n) => Math.abs(n - Math.round(n)) < .005 ? String(Math.round(n)) : n.toFixed(1);
-      const values = () => {
-        const v1 = +speed.value, rest = +restTime.value, v2 = v1, rate = +viewSpeed.value;
-        const t1 = restDistance / v1, t2 = (totalDistance - restDistance) / v2, restEnd = t1 + rest, totalT = t1 + rest + t2;
-        return { v1, rest, v2, rate, t1, restEnd, totalT };
-      };
-      const distanceAt = (t) => {
-        const { v1, v2, t1, restEnd } = values();
-        if (t <= t1) return v1 * t;
-        if (t <= restEnd) return restDistance;
-        return Math.min(totalDistance, restDistance + v2 * (t - restEnd));
-      };
-      const phaseAt = (t) => {
-        const { t1, restEnd, totalT } = values();
-        if (t < t1) return 'walk1';
-        if (t < restEnd) return 'rest';
-        if (t < totalT) return 'walk2';
-        return 'goal';
-      };
-
-      function place(t = 0) {
-        const dist = distanceAt(t);
-        walker.style.left = (4 + 92 * dist / totalDistance) + '%';
-        const phase = phaseAt(t);
-        walker.classList.toggle('moving', running && (phase === 'walk1' || phase === 'walk2'));
-        walker.classList.toggle('resting', phase === 'rest');
-        walker.classList.toggle('arrived', phase === 'goal');
-      }
-
-      function updateText(t = pausedAt) {
-        const { v1, rest, v2, totalT } = values();
-        $('#speedOut').value = `${tidy(v1)} m/秒`;
-        $('#restOut').value = `${tidy(rest)} 秒`;
-        $('#viewOut').value = `${(+viewSpeed.value).toFixed(1)} 倍`;
-        $('#speedResult').textContent = `${tidy(v1)}m/秒`;
-        $('#restResult').textContent = `${tidy(rest)}秒`;
-        $('#goalTime').textContent = `${tidy(totalT)}秒`;
-        $('#currentDistance').textContent = `${tidy(distanceAt(t))}m`;
-        const phase = phaseAt(t);
-        $('#status').textContent = phase === 'walk1' ? '全部で100mの道を歩くよ\nまず50mまで歩こう' : phase === 'rest' ? 'ここで止まるよ' : phase === 'walk2' ? '同じ速さでまた進むよ' : 'ゴール！';
-        $('#thought').textContent = phase === 'rest' ? '止まっている間、グラフは横にまっすぐ伸びる。' : '止まっている間、グラフは横になる。また同じ速さで進むと、同じ傾きの線になる。';
-      }
-
-      function update(resetTime = true) {
-        cancelAnimationFrame(raf);
-        running = false;
-        if (resetTime) pausedAt = 0;
-        $('#play').textContent = '▶ 再生';
-        const t = Math.min(pausedAt, values().totalT);
-        place(t); updateText(t); drawGraph(t);
-      }
-
-      function play() {
-        cancelAnimationFrame(raf);
-        running = true;
-        startedAt = performance.now() - (pausedAt * 1000 / values().rate);
-        $('#play').textContent = '↻ もう一度';
-        function tick(now) {
-          const { totalT, rate } = values();
-          const t = Math.min(totalT, (now - startedAt) / 1000 * rate);
-          pausedAt = t;
-          place(t); updateText(t); drawGraph(t);
-          if (t < totalT && running) raf = requestAnimationFrame(tick);
-          else { running = false; place(totalT); updateText(totalT); }
-        }
-        raf = requestAnimationFrame(tick);
-      }
-
-      function drawGraph(currentT = 0) {
-        const { t1, rest, restEnd, totalT } = values();
-        const maxT = Math.max(12, Math.ceil(totalT + 2));
-        const L=58, R=694, T=18, B=224, W=R-L, H=B-T;
-        const x = t => L + W * t / maxT, y = m => B - H * m / totalDistance;
-        const currentD = distanceAt(currentT);
-        let grid = '';
-        for (let i=0; i<=4; i++) {
-          const gx=L+W*i/4, gy=T+H*i/4;
-          grid += `<line x1="${L}" y1="${gy}" x2="${R}" y2="${gy}"/><text x="${L-10}" y="${gy+4}" text-anchor="end">${100-25*i}</text>`;
-          grid += `<line x1="${gx}" y1="${T}" x2="${gx}" y2="${B}"/><text x="${gx}" y="${B+21}" text-anchor="middle">${tidy(maxT*i/4)}</text>`;
-        }
-        let progressPath = `M ${x(0)} ${y(0)}`;
-        if (currentT <= t1) {
-          progressPath += ` L ${x(currentT)} ${y(currentD)}`;
-        } else if (currentT <= restEnd) {
-          progressPath += ` L ${x(t1)} ${y(restDistance)} L ${x(currentT)} ${y(restDistance)}`;
-        } else {
-          progressPath += ` L ${x(t1)} ${y(restDistance)} L ${x(restEnd)} ${y(restDistance)} L ${x(currentT)} ${y(currentD)}`;
-        }
-        graph.innerHTML = `<style>.grid line{stroke:#e8e3d8;stroke-width:1}.grid text{fill:#65727d;stroke:none;font:12px system-ui,sans-serif}</style><g class="grid">${grid}</g>
-          <g fill="#65727d" font-family="system-ui,sans-serif" font-size="12"><text x="376" y="268" text-anchor="middle">時間（秒）</text><text transform="translate(17 121) rotate(-90)" text-anchor="middle">スタートからの距離（m）</text></g>
-          <path d="M ${x(0)} ${y(0)} L ${x(t1)} ${y(restDistance)} L ${x(restEnd)} ${y(restDistance)} L ${x(totalT)} ${y(totalDistance)}" fill="none" stroke="#2e9d70" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".18"/>
-          <path d="${progressPath}" fill="none" stroke="#2e9d70" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <rect x="${x(t1)}" y="${y(restDistance)-8}" width="${Math.max(2, x(restEnd)-x(t1))}" height="16" rx="8" fill="#f7c948" opacity=".35"/>
-          <line x1="${x(t1)}" y1="${y(restDistance)}" x2="${x(t1)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
-          <line x1="${x(restEnd)}" y1="${y(restDistance)}" x2="${x(restEnd)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
-          <line x1="${x(totalT)}" y1="${y(totalDistance)}" x2="${x(totalT)}" y2="${B}" stroke="#a59b85" stroke-dasharray="5 5"/>
-          <line x1="${x(t1)}" y1="${B}" x2="${x(t1)}" y2="${B+7}" stroke="#755900" stroke-width="2"/>
-          <line x1="${x(restEnd)}" y1="${B}" x2="${x(restEnd)}" y2="${B+7}" stroke="#755900" stroke-width="2"/>
-          <line x1="${x(totalT)}" y1="${B}" x2="${x(totalT)}" y2="${B+7}" stroke="#755900" stroke-width="2"/>
-          <text x="${x(t1)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(t1)}</text>
-          <text x="${x(restEnd)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(restEnd)}</text>
-          <text x="${x(totalT)}" y="${B+21}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="800">${tidy(totalT)}</text>
-          <circle cx="${x(currentT)}" cy="${y(currentD)}" r="8" fill="#ed6a5a" stroke="#fffefa" stroke-width="3"/>
-          <text x="${Math.min(R-74, Math.max(L+74, (x(t1)+x(restEnd))/2))}" y="${y(restDistance)-18}" text-anchor="middle" fill="#755900" font-family="system-ui,sans-serif" font-size="13" font-weight="800">水平</text>
-          <text x="${x(t1)-10}" y="${Math.max(T+16,y(restDistance)-18)}" text-anchor="end" fill="#755900" font-family="system-ui,sans-serif" font-size="12" font-weight="700">${tidy(rest)}秒休憩</text>`;
-      }
-
-      [speed, restTime].forEach(input => input.addEventListener('input', () => update(true)));
-      viewSpeed.addEventListener('input', () => { updateText(pausedAt); if (!running) drawGraph(pausedAt); });
-      $('#play').addEventListener('click', () => { pausedAt = 0; play(); });
-      $('#reset').addEventListener('click', () => update(true));
       $('#checkChallenge').addEventListener('click', () => {
-        const answer = $('#challengeAnswer').value.trim().replace(/[０-９]/g, char => String.fromCharCode(char.charCodeAt(0) - 0xFEE0));
-        const result = $('#challengeResult');
-        const correct = answer === '12' || answer === '12秒';
+        const normalize = raw => raw
+          .replace(/[０-９]/g, char => String.fromCharCode(char.charCodeAt(0) - 0xFEE0))
+          .replace(/\s+/g, '').replace(/まい|こ|さい|才|年後|ページ|dL|dl/g, '');
+        const a = normalize($('#challengeAnswerA').value);
+        const correct = Number(a) === PR_CORRECT_A && a !== '';
+
         if (correct) {
+          // 共通部分：保存方式（キー名・旧キー移行ロジック）は変更しない
           const storageKey = 'intellectualToysAnimalBook.v1';
           const legacyStorageKeys = ['intellectualToysAnimalBook', 'animalBook', 'animalCollection', 'intellectualToysAnimals'];
-          const acquired = new Set();
-          [storageKey, ...legacyStorageKeys].forEach(key => {
+          const normalizeAcquired = value => {
+            if (Array.isArray(value)) return value.map(String);
+            if (value && typeof value === 'object') return Object.keys(value).filter(id => value[id]);
+            return [];
+          };
+          const readStoredIds = key => {
             try {
               const raw = localStorage.getItem(key);
-              if (!raw) return;
-              const parsed = JSON.parse(raw);
-              if (Array.isArray(parsed)) parsed.map(String).forEach(id => acquired.add(id));
-              else if (parsed && typeof parsed === 'object') Object.keys(parsed).filter(id => parsed[id]).forEach(id => acquired.add(id));
-            } catch (error) {}
-          });
-          acquired.add('004');
-          try {
-            localStorage.setItem(storageKey, JSON.stringify([...acquired].sort()));
-          } catch (error) {}
+              return raw ? normalizeAcquired(JSON.parse(raw)) : [];
+            } catch (error) { return []; }
+          };
+          const acquired = new Set(readStoredIds(storageKey));
+          legacyStorageKeys.forEach(key => readStoredIds(key).forEach(id => acquired.add(id)));
+          acquired.add(animalId);
+          try { localStorage.setItem(storageKey, JSON.stringify([...acquired].sort())); } catch (error) {}
+          setMascot('happy', 'やったね！\nコレクションが増えたよ！');
+        } else {
+          setMascot('thinking', 'おしい！もう一度考えてみよう。');
         }
-        result.className = `challenge-result show ${correct ? 'correct' : 'retry'}`;
-        result.innerHTML = correct
-          ? `<p>🎉 正解！</p><p>✨✨✨</p><img class="panda-prize" src="../../assets/${animalId}.png" alt="${animals[animalId]}" width="80" height="80"><p>新しいなかまが増えた！</p><div class="challenge-links"><a href="../../animal-book/index.html">📖 どうぶつ図鑑を見る</a><a href="../005-baisuuzan/index.html">➡ 次の知的玩具へ</a></div>`
-          : `<p>もう一度ためしてみよう。</p><p>スライダーを</p><p>速さ20</p><p>休憩時間7</p><p>にして動きを見てみよう！</p>`;
+        $('#challengeMessage').textContent = correct ? '' : 'もう一度、上の線分図を動かして確かめてみよう。';
+        $('#challengeReward').classList.toggle('show', correct);
       });
-      update();
+      $('#result-animal').src = `../../assets/${animalId}.png`;
+      $('#result-animal').alt = animals[animalId];
+      /* ============================================================
+         単元部分ここまで
+         ============================================================ */
     })();
   </script>
 </body>
