@@ -125,34 +125,6 @@ h1{
     margin:8px 0;
 }
 
-.animal-preview{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin:12px auto 14px;
-    font-size:1.8rem;
-    line-height:1;
-}
-
-.animal-preview span{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    width:2.2rem;
-    height:2.2rem;
-    border:1px solid #e8dfcd;
-    border-radius:50%;
-    background:#fff6dc;
-    box-shadow:0 2px 5px rgba(128,88,20,.08);
-}
-
-.animal-preview img{
-    display:block;
-    width:80%;
-    height:80%;
-    object-fit:contain;
-}
-
 .animal-book-link{
     display:inline-block;
     margin-top:4px;
@@ -265,7 +237,7 @@ footer{
 </p>
 
 <div class="counter">
-5 / 100
+6 / 100
 </div>
 </header>
 
@@ -281,13 +253,6 @@ footer{
 コレクションが少しずつ増えていきます。
 </p>
 <p>いろいろなコレクションを集めてみよう！</p>
-<div class="animal-preview" aria-label="どうぶつのなかま">
-  <span><img src="assets/001.png" alt="うさぎ"></span>
-  <span><img src="assets/002.png" alt="きつね"></span>
-  <span><img src="assets/003.png" alt="ハムスター"></span>
-  <span><img src="assets/004.png" alt="いぬ"></span>
-  <span><img src="assets/005.png" alt="ねずみ"></span>
-</div>
 <a class="animal-book-link" href="animal-book/index.html">📖 コレクション図鑑を見る</a>
 </section>
 
@@ -330,6 +295,13 @@ footer{
   <strong>#005 倍数算</strong><br>
   <small>01 線分図・面積図</small><br>
   <small>そろえてみつけよう</small><br>
+  <small>中学受験算数 / 線分図 / 文章題</small>
+</a>
+
+<a class="card completed-card" href="toys/006-shoukyozan/index.html">
+  <strong>#006 消去算</strong><br>
+  <small>01 線分図・面積図</small><br>
+  <small>けして みつけよう</small><br>
   <small>中学受験算数 / 線分図 / 文章題</small>
 </a>
 
@@ -389,6 +361,12 @@ const toys=[
         id:5,
         title:"倍数算",
         slug:"005-baisuuzan",
+        completed:true
+    },
+    {
+        id:6,
+        title:"消去算",
+        slug:"006-shoukyozan",
         completed:true
     }
 ];
